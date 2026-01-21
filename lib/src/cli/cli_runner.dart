@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
+import '../chord.dart';
+import '../interval.dart';
 import '../presets.dart';
 import 'config.dart';
 
@@ -45,6 +47,8 @@ class CliRunner {
     switch (command.name) {
       case 'setup':
         return _runSetup(command);
+      case 'chord':
+        return _runChord(command);
       default:
         stderr.writeln('Unknown command: ${command.name}');
         return 64;
@@ -69,7 +73,20 @@ class CliRunner {
     // Setup subcommand
     parser.addCommand('setup', _buildSetupParser());
 
+    // Chord subcommand
+    parser.addCommand('chord', _buildChordParser());
+
     return parser;
+  }
+
+  ArgParser _buildChordParser() {
+    return ArgParser()
+      ..addFlag(
+        'help',
+        abbr: 'h',
+        negatable: false,
+        help: 'Show help for the chord command.',
+      );
   }
 
   ArgParser _buildSetupParser() {
@@ -346,6 +363,7 @@ class CliRunner {
     print('');
     print('Commands:');
     print('  setup    Configure your instrument, tuning, and capo');
+    print('  chord    Show chord notes and formula');
     print('');
     print('Global options:');
     print(parser.usage);
@@ -432,5 +450,154 @@ class CliRunner {
       }
       print('');
     }
+  }
+
+  // ==================== Chord Command ====================
+
+  Future<int> _runChord(ArgResults args) async {
+    // Help
+    if (args['help'] as bool) {
+      _printChordHelp();
+      return 0;
+    }
+
+    final rest = args.rest;
+    if (rest.isEmpty) {
+      _printChordHelp();
+      return 0;
+    }
+
+    // Parse chord(s)
+    if (rest.length == 1) {
+      // Single chord - show info
+      return _showChordInfo(rest[0]);
+    } else if (rest.length == 2) {
+      // Two chords - compare
+      return _compareChords(rest[0], rest[1]);
+    } else {
+      stderr.writeln('Error: Too many arguments. Expected 1 or 2 chord names.');
+      return 64;
+    }
+  }
+
+  int _showChordInfo(String chordStr) {
+    final chord = Chord.tryParse(chordStr);
+    if (chord == null) {
+      stderr.writeln('Error: Could not parse chord "$chordStr"');
+      stderr.writeln('');
+      stderr.writeln('Expected formats: C, Am, G7, Fmaj7, Bb, F#m, etc.');
+      return 1;
+    }
+
+    print('');
+    print('  ${chord.name} (${chord.symbol})');
+    print('');
+
+    // Notes
+    final notes = chord.pitchClasses.map((pc) => pc.name).join(' - ');
+    print('  Notes:    $notes');
+
+    // Formula with interval names
+    final formula = chord.intervals
+        .map((i) => i == Interval.perfectUnison ? 'R' : i.shortName)
+        .join(' - ');
+    print('  Formula:  $formula');
+    print('');
+
+    // Beginner-friendly explanation
+    print('  Intervals:');
+    for (var i = 0; i < chord.intervals.length; i++) {
+      final interval = chord.intervals[i];
+      final note = chord.pitchClasses[i];
+      if (i == 0) {
+        print('    ${note.name.padRight(3)} = Root');
+      } else {
+        print('    ${note.name.padRight(3)} = ${interval.friendlyName} (${interval.shortName})');
+      }
+    }
+    print('');
+
+    return 0;
+  }
+
+  int _compareChords(String chord1Str, String chord2Str) {
+    final chord1 = Chord.tryParse(chord1Str);
+    final chord2 = Chord.tryParse(chord2Str);
+
+    if (chord1 == null) {
+      stderr.writeln('Error: Could not parse chord "$chord1Str"');
+      return 1;
+    }
+    if (chord2 == null) {
+      stderr.writeln('Error: Could not parse chord "$chord2Str"');
+      return 1;
+    }
+
+    print('');
+    print('  Comparing ${chord1.symbol} and ${chord2.symbol}');
+    print('');
+
+    // Side by side comparison
+    final notes1 = chord1.pitchClasses.map((pc) => pc.name).join(' - ');
+    final notes2 = chord2.pitchClasses.map((pc) => pc.name).join(' - ');
+    print('  ${chord1.symbol.padRight(12)} ${chord2.symbol}');
+    print('  ${"─" * 30}');
+    print('  ${notes1.padRight(12)} $notes2');
+    print('');
+
+    // Find common notes
+    final set1 = chord1.pitchClasses.toSet();
+    final set2 = chord2.pitchClasses.toSet();
+    final common = set1.intersection(set2);
+
+    if (common.isNotEmpty) {
+      final commonStr = common.map((pc) => pc.name).join(', ');
+      print('  Common notes: $commonStr');
+    } else {
+      print('  No common notes');
+    }
+
+    // Unique notes
+    final only1 = set1.difference(set2);
+    final only2 = set2.difference(set1);
+    if (only1.isNotEmpty) {
+      print('  Only in ${chord1.symbol}: ${only1.map((pc) => pc.name).join(", ")}');
+    }
+    if (only2.isNotEmpty) {
+      print('  Only in ${chord2.symbol}: ${only2.map((pc) => pc.name).join(", ")}');
+    }
+    print('');
+
+    return 0;
+  }
+
+  void _printChordHelp() {
+    print('music_theory chord - Show chord notes and formula');
+    print('');
+    print('Usage: music_theory chord <chord> [chord2]');
+    print('');
+    print('Arguments:');
+    print('  chord     A chord name like C, Am, G7, Fmaj7, Bb, F#m');
+    print('  chord2    Optional second chord to compare');
+    print('');
+    print('Options:');
+    print('  -h, --help    Show this help');
+    print('');
+    print('Examples:');
+    print('  music_theory chord Am        Show A minor chord notes and formula');
+    print('  music_theory chord Gmaj7     Show G major 7th chord');
+    print('  music_theory chord C Am      Compare C major and A minor');
+    print('  music_theory chord F#m Bm    Compare F# minor and B minor');
+    print('');
+    print('Supported chord types:');
+    print('  Major:      C, Cmaj, CM');
+    print('  Minor:      Cm, Cmin, C-');
+    print('  Diminished: Cdim, C°');
+    print('  Augmented:  Caug, C+');
+    print('  Suspended:  Csus2, Csus4, Csus');
+    print('  Seventh:    C7, Cmaj7, CM7, Cm7, Cdim7, Cm7b5');
+    print('  Extended:   C9, Cmaj9, Cm9, Cadd9');
+    print('  Sixth:      C6, Cm6');
+    print('  Power:      C5');
   }
 }

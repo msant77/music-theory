@@ -123,15 +123,16 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Chord parsing from string ("Am", "G7", "Cmaj7")
   - [x] Unit tests for chord construction (72 tests)
 
-### [P2] Create `chord` CLI command `[GH: #6]`
-- **Status:** Planned
+### ~~[P2] Create `chord` CLI command~~ `[GH: #6]`
+- **Status:** Done
 - **Labels:** `phase-2`, `cli`
 - **Description:** Show what notes make up a chord
 - **Acceptance Criteria:**
-  - [ ] `chord <name>` shows notes and formula
-  - [ ] `chord <name1> <name2>` compares chords
-  - [ ] Output explains intervals in plain language
-  - [ ] `--help` with examples for beginners
+  - [x] `chord <name>` shows notes and formula
+  - [x] `chord <name1> <name2>` compares chords
+  - [x] Output explains intervals in plain language
+  - [x] `--help` with examples for beginners
+  - [x] Unit tests (25 tests)
 
 ---
 
@@ -169,8 +170,9 @@ This file tracks development tasks before they become GitHub issues.
   - [ ] `voicings <chord>` uses current instrument setup
   - [ ] `--level beginner|intermediate|advanced` filter
   - [ ] `--limit <n>` to cap results
-  - [ ] ASCII fretboard diagram output
+  - [ ] ASCII fretboard diagram output with fret numbers
   - [ ] `--help` with beginner-friendly explanation
+- **Notes:** Focus on fretted instruments (guitar, ukulele, etc.), not piano
 
 ---
 
