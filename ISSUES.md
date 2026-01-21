@@ -111,17 +111,17 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Extension methods on Note and PitchClass
   - [x] Unit tests for interval arithmetic (59 tests)
 
-### [P2] Implement Chord model and formulas `[GH: #5]`
-- **Status:** Planned
+### ~~[P2] Implement Chord model and formulas~~ `[GH: #5]`
+- **Status:** Done
 - **Labels:** `phase-2`, `model`
 - **Description:** Chord types as interval patterns
 - **Acceptance Criteria:**
-  - [ ] `ChordType` for common types (major, minor, 7th, maj7, m7, dim, aug, sus2, sus4)
-  - [ ] `Chord` class with root note and type
-  - [ ] Chord formula definitions (major = root + M3 + P5)
-  - [ ] Get notes in any chord
-  - [ ] Chord parsing from string ("Am", "G7", "Cmaj7")
-  - [ ] Unit tests for chord construction
+  - [x] `ChordType` for common types (major, minor, 7th, maj7, m7, dim, aug, sus2, sus4)
+  - [x] `Chord` class with root note and type
+  - [x] Chord formula definitions (major = root + M3 + P5)
+  - [x] Get notes in any chord
+  - [x] Chord parsing from string ("Am", "G7", "Cmaj7")
+  - [x] Unit tests for chord construction (72 tests)
 
 ### [P2] Create `chord` CLI command `[GH: #6]`
 - **Status:** Planned
