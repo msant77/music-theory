@@ -96,17 +96,20 @@ This file tracks development tasks before they become GitHub issues.
   - [ ] `note --midi <number>` converts MIDI number to note
   - [ ] `--help` with beginner-friendly explanations
 
-### [P2] Implement Interval model `[GH: #4]`
-- **Status:** Planned
+### ~~[P2] Implement Interval model~~ `[GH: #4]`
+- **Status:** Done
 - **Labels:** `phase-2`, `model`
 - **Description:** Musical intervals - the distance between notes
 - **Acceptance Criteria:**
-  - [ ] `Interval` class with semitones and quality
-  - [ ] Named intervals: minor 2nd, major 3rd, perfect 5th, etc.
-  - [ ] Calculate interval between two notes
-  - [ ] Add interval to note
-  - [ ] Beginner-friendly names ("half step", "whole step")
-  - [ ] Unit tests for interval arithmetic
+  - [x] `Interval` class with semitones and quality
+  - [x] Named intervals: minor 2nd, major 3rd, perfect 5th, etc.
+  - [x] Calculate interval between two notes
+  - [x] Add interval to note (addTo, subtractFrom)
+  - [x] Beginner-friendly names ("half step", "whole step")
+  - [x] Interval inversion (M3 ↔ m6)
+  - [x] Compound intervals (9th, 10th, etc.)
+  - [x] Extension methods on Note and PitchClass
+  - [x] Unit tests for interval arithmetic (59 tests)
 
 ### [P2] Implement Chord model and formulas `[GH: #5]`
 - **Status:** Planned

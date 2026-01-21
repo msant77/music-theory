@@ -48,6 +48,7 @@ library music_theory;
 
 export 'src/pitch_class.dart';
 export 'src/note.dart';
+export 'src/interval.dart';
 export 'src/instrument.dart';
 export 'src/tuning.dart';
 export 'src/presets.dart';
