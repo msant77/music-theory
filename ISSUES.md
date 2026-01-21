@@ -162,16 +162,18 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Known chord shapes match expected output (C, G, D, Am, Em)
   - [x] Unit tests with standard chord shapes (26 tests)
 
-### [P3] Create `voicings` CLI command `[GH: #9]`
-- **Status:** Planned
+### ~~[P3] Create `voicings` CLI command~~ `[GH: #9]`
+- **Status:** Done
 - **Labels:** `phase-3`, `cli`
 - **Description:** Show fingerings for a chord
 - **Acceptance Criteria:**
-  - [ ] `voicings <chord>` uses current instrument setup
-  - [ ] `--level beginner|intermediate|advanced` filter
-  - [ ] `--limit <n>` to cap results
-  - [ ] ASCII fretboard diagram output with fret numbers
-  - [ ] `--help` with beginner-friendly explanation
+  - [x] `voicings <chord>` uses current instrument setup
+  - [x] `--level beginner|intermediate|advanced` filter
+  - [x] `--limit <n>` to cap results
+  - [x] ASCII fretboard diagram output with fret numbers
+  - [x] `--help` with beginner-friendly explanation
+  - [x] `--compact` mode for text-only output
+  - [x] Unit tests (36 tests)
 - **Notes:** Focus on fretted instruments (guitar, ukulele, etc.), not piano
 
 ---

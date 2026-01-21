@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:args/args.dart';
 
 import '../chord.dart';
+import '../fretboard_diagram.dart';
 import '../interval.dart';
 import '../presets.dart';
+import '../voicing.dart';
+import '../voicing_calculator.dart';
 import 'config.dart';
 
 /// Version of the music_theory package.
@@ -49,6 +52,8 @@ class CliRunner {
         return _runSetup(command);
       case 'chord':
         return _runChord(command);
+      case 'voicings':
+        return _runVoicings(command);
       default:
         stderr.writeln('Unknown command: ${command.name}');
         return 64;
@@ -76,6 +81,9 @@ class CliRunner {
     // Chord subcommand
     parser.addCommand('chord', _buildChordParser());
 
+    // Voicings subcommand
+    parser.addCommand('voicings', _buildVoicingsParser());
+
     return parser;
   }
 
@@ -86,6 +94,36 @@ class CliRunner {
         abbr: 'h',
         negatable: false,
         help: 'Show help for the chord command.',
+      );
+  }
+
+  ArgParser _buildVoicingsParser() {
+    return ArgParser()
+      ..addFlag(
+        'help',
+        abbr: 'h',
+        negatable: false,
+        help: 'Show help for the voicings command.',
+      )
+      ..addOption(
+        'level',
+        abbr: 'l',
+        help: 'Filter by difficulty: beginner, intermediate, advanced',
+        valueHelp: 'level',
+        allowed: ['beginner', 'intermediate', 'advanced'],
+      )
+      ..addOption(
+        'limit',
+        abbr: 'n',
+        help: 'Maximum number of voicings to show',
+        valueHelp: 'count',
+        defaultsTo: '5',
+      )
+      ..addFlag(
+        'compact',
+        abbr: 'c',
+        negatable: false,
+        help: 'Show compact format instead of fretboard diagrams',
       );
   }
 
@@ -362,8 +400,9 @@ class CliRunner {
     print('Usage: music_theory <command> [options]');
     print('');
     print('Commands:');
-    print('  setup    Configure your instrument, tuning, and capo');
-    print('  chord    Show chord notes and formula');
+    print('  setup      Configure your instrument, tuning, and capo');
+    print('  chord      Show chord notes and formula');
+    print('  voicings   Show how to play a chord on your instrument');
     print('');
     print('Global options:');
     print(parser.usage);
@@ -599,5 +638,130 @@ class CliRunner {
     print('  Extended:   C9, Cmaj9, Cm9, Cadd9');
     print('  Sixth:      C6, Cm6');
     print('  Power:      C5');
+  }
+
+  // ==================== Voicings Command ====================
+
+  Future<int> _runVoicings(ArgResults args) async {
+    // Help
+    if (args['help'] as bool) {
+      _printVoicingsHelp();
+      return 0;
+    }
+
+    final rest = args.rest;
+    if (rest.isEmpty) {
+      _printVoicingsHelp();
+      return 0;
+    }
+
+    // Parse chord
+    final chordStr = rest[0];
+    final chord = Chord.tryParse(chordStr);
+    if (chord == null) {
+      stderr.writeln('Error: Could not parse chord "$chordStr"');
+      stderr.writeln('');
+      stderr.writeln('Expected formats: C, Am, G7, Fmaj7, Bb, F#m, etc.');
+      return 1;
+    }
+
+    // Load instrument config
+    final config = await MusicTheoryConfig.load();
+    final instrument = config.toInstrument();
+
+    // Parse options
+    final levelStr = args['level'] as String?;
+    final limitStr = args['limit'] as String;
+    final compact = args['compact'] as bool;
+
+    final limit = int.tryParse(limitStr) ?? 5;
+
+    // Determine calculator options based on level
+    VoicingCalculatorOptions options;
+    if (levelStr == 'beginner') {
+      options = VoicingCalculatorOptions.beginner;
+    } else if (levelStr == 'intermediate') {
+      options = VoicingCalculatorOptions.intermediate;
+    } else if (levelStr == 'advanced') {
+      options = VoicingCalculatorOptions.advanced;
+    } else {
+      options = const VoicingCalculatorOptions();
+    }
+
+    // Find voicings
+    final calculator = VoicingCalculator(instrument, options: options);
+    final voicings = calculator.findVoicings(chord);
+
+    if (voicings.isEmpty) {
+      print('');
+      print('  No voicings found for ${chord.symbol} on ${instrument.name}');
+      print('');
+      if (levelStr == 'beginner') {
+        print('  Try --level intermediate or --level advanced for more options.');
+      }
+      return 0;
+    }
+
+    // Limit results
+    final displayed = voicings.take(limit).toList();
+
+    print('');
+    print('  ${chord.name} (${chord.symbol}) on ${instrument.name}');
+    print('  Found ${voicings.length} voicing${voicings.length == 1 ? "" : "s"}, showing ${displayed.length}:');
+    print('');
+
+    if (compact) {
+      // Compact format
+      for (var i = 0; i < displayed.length; i++) {
+        final v = displayed[i];
+        final notes = v.pitchClassesOn(instrument).map((p) => p.name).join('-');
+        final diffLabel = _difficultyLabel(v.difficulty);
+        print('  ${i + 1}. ${v.toCompactString().padRight(10)} $notes ($diffLabel)');
+      }
+    } else {
+      // Fretboard diagram format
+      final diagram = FretboardDiagram(instrument);
+      for (var i = 0; i < displayed.length; i++) {
+        final v = displayed[i];
+        final diffLabel = _difficultyLabel(v.difficulty);
+        print('  Voicing ${i + 1} ($diffLabel):');
+        print(diagram.render(v, chordName: chord.symbol));
+      }
+    }
+
+    print('');
+    return 0;
+  }
+
+  String _difficultyLabel(VoicingDifficulty difficulty) {
+    return switch (difficulty) {
+      VoicingDifficulty.beginner => 'easy',
+      VoicingDifficulty.intermediate => 'medium',
+      VoicingDifficulty.advanced => 'hard',
+    };
+  }
+
+  void _printVoicingsHelp() {
+    print('music_theory voicings - Show how to play a chord');
+    print('');
+    print('Usage: music_theory voicings <chord> [options]');
+    print('');
+    print('Arguments:');
+    print('  chord     A chord name like C, Am, G7, Fmaj7');
+    print('');
+    print('Options:');
+    print('  -l, --level <level>   Filter by difficulty: beginner, intermediate, advanced');
+    print('  -n, --limit <count>   Maximum voicings to show (default: 5)');
+    print('  -c, --compact         Show compact format instead of diagrams');
+    print('  -h, --help            Show this help');
+    print('');
+    print('Examples:');
+    print('  music_theory voicings Am               Show Am voicings on configured instrument');
+    print('  music_theory voicings G --level beginner   Show easy G voicings');
+    print('  music_theory voicings C7 --limit 10   Show up to 10 C7 voicings');
+    print('  music_theory voicings Dm --compact    Show voicings in compact format');
+    print('');
+    print('Note: Uses the instrument configured with "music_theory setup".');
+    print('      Default is standard tuning guitar.');
   }
 }
