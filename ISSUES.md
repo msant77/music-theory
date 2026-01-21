@@ -50,35 +50,40 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Tuning methods preserve capo
   - [x] Unit tests for capo scenarios (15 tests)
 
-### [P1] Create `setup` CLI command `[GH: -]`
-- **Status:** Planned
+### ~~[P1] Create `setup` CLI command~~ `[GH: #2]`
+- **Status:** Done
 - **Labels:** `phase-1`, `cli`
 - **Description:** Command to configure instrument for subsequent operations
 - **Acceptance Criteria:**
-  - [ ] `setup --instrument <name>` for presets
-  - [ ] `setup --tuning "<notes>"` for custom tuning
-  - [ ] `setup --capo <fret>` for capo position
-  - [ ] `setup --show` to display current config
-  - [ ] Config persists for session (or saved to file)
-  - [ ] `--help` with beginner-friendly explanations
+  - [x] `setup --instrument <name>` for presets
+  - [x] `setup --tuning "<notes>"` for custom tuning
+  - [x] `setup --capo <fret>` for capo position
+  - [x] `setup --show` to display current config
+  - [x] Config persists to `~/.config/music_theory/config.json`
+  - [x] `--help` with beginner-friendly explanations
+  - [x] `--list` shows available instruments and tunings
+  - [x] `--reset` resets to defaults
+  - [x] Unit tests (30 tests)
 
 ---
 
 ## Phase 2: Notes & Chords Basics
 
-### [P2] Implement PitchClass and Note models `[GH: -]`
+### [P2] Implement Note model with octave `[GH: #3]`
 - **Status:** Planned
 - **Labels:** `phase-2`, `model`
-- **Description:** Core note representation - the 12 chromatic notes
+- **Description:** Core note representation with octave support (PitchClass already done)
 - **Acceptance Criteria:**
-  - [ ] `PitchClass` enum for 12 notes (C through B)
-  - [ ] `Note` class with pitch class and optional octave
-  - [ ] Enharmonic equivalents (C# = Db)
-  - [ ] Note parsing from string ("C#", "Db", "C4")
-  - [ ] Note arithmetic (add semitones)
+  - [x] `PitchClass` enum for 12 notes (C through B) - DONE
+  - [x] Enharmonic equivalents (C# = Db) - DONE
+  - [ ] `Note` class with pitch class and octave (e.g., C4, A#3)
+  - [ ] Note parsing from string ("C#4", "Db3")
+  - [ ] Note arithmetic (add semitones, crossing octave boundaries)
+  - [ ] Comparison operators (Note C4 < Note D4 < Note C5)
+  - [ ] MIDI note number conversion
   - [ ] Unit tests for all note operations
 
-### [P2] Implement Interval model `[GH: -]`
+### [P2] Implement Interval model `[GH: #4]`
 - **Status:** Planned
 - **Labels:** `phase-2`, `model`
 - **Description:** Musical intervals - the distance between notes
@@ -90,7 +95,7 @@ This file tracks development tasks before they become GitHub issues.
   - [ ] Beginner-friendly names ("half step", "whole step")
   - [ ] Unit tests for interval arithmetic
 
-### [P2] Implement Chord model and formulas `[GH: -]`
+### [P2] Implement Chord model and formulas `[GH: #5]`
 - **Status:** Planned
 - **Labels:** `phase-2`, `model`
 - **Description:** Chord types as interval patterns
@@ -102,7 +107,7 @@ This file tracks development tasks before they become GitHub issues.
   - [ ] Chord parsing from string ("Am", "G7", "Cmaj7")
   - [ ] Unit tests for chord construction
 
-### [P2] Create `chord` CLI command `[GH: -]`
+### [P2] Create `chord` CLI command `[GH: #6]`
 - **Status:** Planned
 - **Labels:** `phase-2`, `cli`
 - **Description:** Show what notes make up a chord
@@ -116,7 +121,7 @@ This file tracks development tasks before they become GitHub issues.
 
 ## Phase 3: Chord Voicings
 
-### [P3] Implement Voicing model `[GH: -]`
+### [P3] Implement Voicing model `[GH: #7]`
 - **Status:** Planned
 - **Labels:** `phase-3`, `model`
 - **Description:** A specific fingering for a chord on an instrument
@@ -128,7 +133,7 @@ This file tracks development tasks before they become GitHub issues.
   - [ ] Difficulty score calculation
   - [ ] Unit tests for voicing representation
 
-### [P3] Implement voicing calculator `[GH: -]`
+### [P3] Implement voicing calculator `[GH: #8]`
 - **Status:** Planned
 - **Labels:** `phase-3`, `feature`
 - **Description:** Algorithm to find all ways to play a chord
@@ -140,7 +145,7 @@ This file tracks development tasks before they become GitHub issues.
   - [ ] Known chord shapes match expected output
   - [ ] Unit tests with standard chord shapes
 
-### [P3] Create `voicings` CLI command `[GH: -]`
+### [P3] Create `voicings` CLI command `[GH: #9]`
 - **Status:** Planned
 - **Labels:** `phase-3`, `cli`
 - **Description:** Show fingerings for a chord
@@ -155,7 +160,7 @@ This file tracks development tasks before they become GitHub issues.
 
 ## Phase 4: Transposition
 
-### [P4] Implement transposition functions `[GH: -]`
+### [P4] Implement transposition functions `[GH: #10]`
 - **Status:** Planned
 - **Labels:** `phase-4`, `feature`
 - **Description:** Shift chords up or down by semitones
@@ -166,7 +171,7 @@ This file tracks development tasks before they become GitHub issues.
   - [ ] Key-aware transposition (stay in key signature)
   - [ ] Unit tests for edge cases (wrap-around, double sharps)
 
-### [P4] Implement capo suggestion algorithm `[GH: -]`
+### [P4] Implement capo suggestion algorithm `[GH: #11]`
 - **Status:** Planned
 - **Labels:** `phase-4`, `feature`
 - **Description:** Suggest capo positions for easier chord shapes
@@ -176,7 +181,7 @@ This file tracks development tasks before they become GitHub issues.
   - [ ] Consider common open chord shapes
   - [ ] Unit tests with known examples (F → capo 1 + E shape)
 
-### [P4] Create `transpose` CLI command `[GH: -]`
+### [P4] Create `transpose` CLI command `[GH: #12]`
 - **Status:** Planned
 - **Labels:** `phase-4`, `cli`
 - **Description:** Change the key of chords
@@ -190,7 +195,7 @@ This file tracks development tasks before they become GitHub issues.
 
 ## Phase 5: Simple Analysis (Future)
 
-### [P5] Implement key detection `[GH: -]`
+### [P5] Implement key detection `[GH: #13]`
 - **Status:** Planned
 - **Labels:** `phase-5`, `feature`
 - **Description:** Infer the key from a chord progression
@@ -200,7 +205,7 @@ This file tracks development tasks before they become GitHub issues.
   - [ ] Handle ambiguous cases
   - [ ] Unit tests with common progressions
 
-### [P5] Implement Roman numeral analysis `[GH: -]`
+### [P5] Implement Roman numeral analysis `[GH: #14]`
 - **Status:** Planned
 - **Labels:** `phase-5`, `feature`
 - **Description:** Label chords with their function (I, IV, V, etc.)
@@ -210,7 +215,7 @@ This file tracks development tasks before they become GitHub issues.
   - [ ] Beginner-friendly explanations
   - [ ] Unit tests for standard progressions
 
-### [P5] Create `analyze` CLI command `[GH: -]`
+### [P5] Create `analyze` CLI command `[GH: #15]`
 - **Status:** Planned
 - **Labels:** `phase-5`, `cli`
 - **Description:** Understand a chord progression
