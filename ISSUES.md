@@ -69,19 +69,20 @@ This file tracks development tasks before they become GitHub issues.
 
 ## Phase 2: Notes & Chords Basics
 
-### [P2] Implement Note model with octave `[GH: #3]`
-- **Status:** Planned
+### ~~[P2] Implement Note model with octave~~ `[GH: #3]`
+- **Status:** Done
 - **Labels:** `phase-2`, `model`
 - **Description:** Core note representation with octave support (PitchClass already done)
 - **Acceptance Criteria:**
   - [x] `PitchClass` enum for 12 notes (C through B) - DONE
   - [x] Enharmonic equivalents (C# = Db) - DONE
-  - [ ] `Note` class with pitch class and octave (e.g., C4, A#3)
-  - [ ] Note parsing from string ("C#4", "Db3")
-  - [ ] Note arithmetic (add semitones, crossing octave boundaries)
-  - [ ] Comparison operators (Note C4 < Note D4 < Note C5)
-  - [ ] MIDI note number conversion
-  - [ ] Unit tests for all note operations
+  - [x] `Note` class with pitch class and octave (e.g., C4, A#3)
+  - [x] Note parsing from string ("C#4", "Db3")
+  - [x] Note arithmetic (add semitones, crossing octave boundaries)
+  - [x] Comparison operators (Note C4 < Note D4 < Note C5)
+  - [x] MIDI note number conversion
+  - [x] Frequency calculation (A4 = 440 Hz)
+  - [x] Unit tests for all note operations (67 tests)
 
 ### [P2] Implement Interval model `[GH: #4]`
 - **Status:** Planned
