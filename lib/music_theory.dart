@@ -54,3 +54,4 @@ export 'src/instrument.dart';
 export 'src/tuning.dart';
 export 'src/presets.dart';
 export 'src/voicing.dart';
+export 'src/voicing_calculator.dart';

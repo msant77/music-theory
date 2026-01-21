@@ -150,17 +150,17 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Difficulty score calculation
   - [x] Unit tests for voicing representation (59 tests)
 
-### [P3] Implement voicing calculator `[GH: #8]`
-- **Status:** Planned
+### ~~[P3] Implement voicing calculator~~ `[GH: #8]`
+- **Status:** Done
 - **Labels:** `phase-3`, `feature`
 - **Description:** Algorithm to find all ways to play a chord
 - **Acceptance Criteria:**
-  - [ ] Find all voicings for a chord on an instrument
-  - [ ] Filter by playability (max finger stretch)
-  - [ ] Filter by difficulty level (beginner/intermediate/advanced)
-  - [ ] Rank voicings by ease of playing
-  - [ ] Known chord shapes match expected output
-  - [ ] Unit tests with standard chord shapes
+  - [x] Find all voicings for a chord on an instrument
+  - [x] Filter by playability (max finger stretch)
+  - [x] Filter by difficulty level (beginner/intermediate/advanced)
+  - [x] Rank voicings by ease of playing
+  - [x] Known chord shapes match expected output (C, G, D, Am, Em)
+  - [x] Unit tests with standard chord shapes (26 tests)
 
 ### [P3] Create `voicings` CLI command `[GH: #9]`
 - **Status:** Planned
