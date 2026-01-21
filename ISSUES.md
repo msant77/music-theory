@@ -15,7 +15,7 @@ This file tracks development tasks before they become GitHub issues.
 
 ## Phase 1: Instrument Setup
 
-### ~~[P1] Create Instrument and StringConfig models~~ `[GH: -]`
+### ~~[P1] Create Instrument and StringConfig models~~ `[GH: #1]`
 - **Status:** Done
 - **Labels:** `phase-1`, `model`
 - **Description:** Define how instruments are represented - strings, tunings, fret counts
@@ -26,7 +26,7 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Custom instrument creation support
   - [x] Unit tests for all preset configurations (62 tests)
 
-### ~~[P1] Add tuning presets and custom tuning support~~ `[GH: -]`
+### ~~[P1] Add tuning presets and custom tuning support~~ `[GH: #1]`
 - **Status:** Done
 - **Labels:** `phase-1`, `feature`
 - **Description:** Common alternate tunings and ability to define custom ones
