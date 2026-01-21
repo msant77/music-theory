@@ -138,17 +138,17 @@ This file tracks development tasks before they become GitHub issues.
 
 ## Phase 3: Chord Voicings
 
-### [P3] Implement Voicing model `[GH: #7]`
-- **Status:** Planned
+### ~~[P3] Implement Voicing model~~ `[GH: #7]`
+- **Status:** Done
 - **Labels:** `phase-3`, `model`
 - **Description:** A specific fingering for a chord on an instrument
 - **Acceptance Criteria:**
-  - [ ] `Voicing` class with fret positions per string
-  - [ ] Optional finger numbers
-  - [ ] Barre chord notation
-  - [ ] Open/muted string indicators
-  - [ ] Difficulty score calculation
-  - [ ] Unit tests for voicing representation
+  - [x] `Voicing` class with fret positions per string
+  - [x] Optional finger numbers
+  - [x] Barre chord notation
+  - [x] Open/muted string indicators
+  - [x] Difficulty score calculation
+  - [x] Unit tests for voicing representation (59 tests)
 
 ### [P3] Implement voicing calculator `[GH: #8]`
 - **Status:** Planned
