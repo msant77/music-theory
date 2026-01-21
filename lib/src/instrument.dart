@@ -61,7 +61,7 @@ class StringConfig {
   int get hashCode => Object.hash(openNote, octave, fretCount);
 }
 
-/// A stringed instrument with a specific tuning.
+/// A stringed instrument with a specific tuning and optional capo.
 class Instrument {
   /// Display name of the instrument.
   final String name;
@@ -69,23 +69,37 @@ class Instrument {
   /// Strings from lowest pitch to highest pitch.
   final List<StringConfig> strings;
 
-  /// Creates an instrument with the given [name] and [strings].
+  /// Capo position (0 = no capo).
+  ///
+  /// When a capo is applied, all sounding notes are raised by this many
+  /// semitones, and the effective playable fret range is reduced.
+  final int capo;
+
+  /// Creates an instrument with the given [name], [strings], and optional [capo].
   const Instrument({
     required this.name,
     required this.strings,
+    this.capo = 0,
   });
 
   /// Number of strings on the instrument.
   int get stringCount => strings.length;
 
-  /// Creates a copy with a different tuning.
+  /// Minimum fret count across all strings.
+  int get minFretCount =>
+      strings.map((s) => s.fretCount).reduce((a, b) => a < b ? a : b);
+
+  /// Number of playable frets (accounting for capo).
+  int get playableFrets => minFretCount - capo;
+
+  /// Creates a copy with a different tuning, preserving capo.
   Instrument withTuning(List<StringConfig> newStrings) {
     if (newStrings.length != strings.length) {
       throw ArgumentError(
         'Tuning must have ${strings.length} strings, got ${newStrings.length}',
       );
     }
-    return Instrument(name: name, strings: newStrings);
+    return Instrument(name: name, strings: newStrings, capo: capo);
   }
 
   /// Parses a tuning string like "E2 A2 D3 G3 B3 E4" and applies it.
@@ -105,12 +119,50 @@ class Instrument {
       ));
     }
 
-    return Instrument(name: name, strings: newStrings);
+    return Instrument(name: name, strings: newStrings, capo: capo);
+  }
+
+  /// Creates a copy with a capo at the given [fret].
+  ///
+  /// Throws [ArgumentError] if fret is negative or exceeds the minimum
+  /// fret count across all strings.
+  Instrument withCapo(int fret) {
+    if (fret < 0) {
+      throw ArgumentError('Capo fret cannot be negative: $fret');
+    }
+    if (fret > minFretCount) {
+      throw ArgumentError(
+        'Capo fret $fret exceeds minimum fret count $minFretCount',
+      );
+    }
+    return Instrument(name: name, strings: strings, capo: fret);
+  }
+
+  /// Removes the capo (sets capo to 0).
+  Instrument withoutCapo() => Instrument(name: name, strings: strings);
+
+  /// Returns the sounding pitch class at a fret position on a string.
+  ///
+  /// [stringIndex] is 0-based (0 = lowest string).
+  /// [fret] is relative to the capo (0 = open string with capo).
+  ///
+  /// The sounding note accounts for both the string's open note and the capo.
+  PitchClass soundingNoteAt(int stringIndex, int fret) {
+    if (stringIndex < 0 || stringIndex >= strings.length) {
+      throw RangeError('String index $stringIndex out of range [0, ${strings.length - 1}]');
+    }
+    if (fret < 0 || fret > playableFrets) {
+      throw RangeError('Fret $fret out of range [0, $playableFrets]');
+    }
+    return strings[stringIndex].openNote.transpose(capo + fret);
   }
 
   @override
   String toString() {
     final tuning = strings.map((s) => s.toString()).join(' ');
+    if (capo > 0) {
+      return '$name ($tuning) capo $capo';
+    }
     return '$name ($tuning)';
   }
 
@@ -118,10 +170,11 @@ class Instrument {
   bool operator ==(Object other) =>
       other is Instrument &&
       other.name == name &&
+      other.capo == capo &&
       _listEquals(other.strings, strings);
 
   @override
-  int get hashCode => Object.hash(name, Object.hashAll(strings));
+  int get hashCode => Object.hash(name, capo, Object.hashAll(strings));
 }
 
 bool _listEquals<T>(List<T> a, List<T> b) {

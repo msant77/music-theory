@@ -199,6 +199,109 @@ void main() {
             Instruments.guitar.withTuningFromString('D2 A2 D3 G3 B3 E4');
         expect(Instruments.guitar, isNot(equals(dropD)));
       });
+
+      test('same instrument with different capo is not equal', () {
+        final withCapo = Instruments.guitar.withCapo(2);
+        expect(Instruments.guitar, isNot(equals(withCapo)));
+      });
+    });
+
+    group('capo', () {
+      test('default capo is 0', () {
+        expect(Instruments.guitar.capo, equals(0));
+      });
+
+      test('withCapo creates instrument with capo', () {
+        final capo2 = Instruments.guitar.withCapo(2);
+        expect(capo2.capo, equals(2));
+        expect(capo2.name, equals('Guitar'));
+        expect(capo2.strings, equals(Instruments.guitar.strings));
+      });
+
+      test('withCapo throws on negative fret', () {
+        expect(() => Instruments.guitar.withCapo(-1), throwsArgumentError);
+      });
+
+      test('withCapo throws when fret exceeds fret count', () {
+        expect(() => Instruments.guitar.withCapo(25), throwsArgumentError);
+      });
+
+      test('withoutCapo removes capo', () {
+        final withCapo = Instruments.guitar.withCapo(3);
+        final withoutCapo = withCapo.withoutCapo();
+        expect(withoutCapo.capo, equals(0));
+      });
+
+      test('playableFrets accounts for capo', () {
+        expect(Instruments.guitar.playableFrets, equals(22));
+        final capo5 = Instruments.guitar.withCapo(5);
+        expect(capo5.playableFrets, equals(17));
+      });
+
+      test('soundingNoteAt returns open note at fret 0 with no capo', () {
+        const guitar = Instruments.guitar;
+        expect(guitar.soundingNoteAt(0, 0), equals(PitchClass.e));
+        expect(guitar.soundingNoteAt(1, 0), equals(PitchClass.a));
+      });
+
+      test('soundingNoteAt accounts for capo', () {
+        final capo2 = Instruments.guitar.withCapo(2);
+        // Open string (fret 0) with capo at 2 sounds F# (E + 2)
+        expect(capo2.soundingNoteAt(0, 0), equals(PitchClass.fSharp));
+        // Fret 1 with capo at 2 sounds G (E + 3)
+        expect(capo2.soundingNoteAt(0, 1), equals(PitchClass.g));
+      });
+
+      test('soundingNoteAt throws on invalid string index', () {
+        expect(
+          () => Instruments.guitar.soundingNoteAt(-1, 0),
+          throwsRangeError,
+        );
+        expect(
+          () => Instruments.guitar.soundingNoteAt(6, 0),
+          throwsRangeError,
+        );
+      });
+
+      test('soundingNoteAt throws on invalid fret', () {
+        expect(
+          () => Instruments.guitar.soundingNoteAt(0, -1),
+          throwsRangeError,
+        );
+        final capo5 = Instruments.guitar.withCapo(5);
+        expect(
+          () => capo5.soundingNoteAt(0, 18), // exceeds playableFrets (17)
+          throwsRangeError,
+        );
+      });
+
+      test('toString shows capo when present', () {
+        final capo3 = Instruments.guitar.withCapo(3);
+        expect(capo3.toString(), contains('capo 3'));
+      });
+
+      test('toString does not show capo when 0', () {
+        expect(Instruments.guitar.toString(), isNot(contains('capo')));
+      });
+
+      test('withTuning preserves capo', () {
+        final capo2 = Instruments.guitar.withCapo(2);
+        final dropD = capo2.withTuning([
+          const StringConfig(openNote: PitchClass.d, octave: 2),
+          const StringConfig(openNote: PitchClass.a, octave: 2),
+          const StringConfig(openNote: PitchClass.d, octave: 3),
+          const StringConfig(openNote: PitchClass.g, octave: 3),
+          const StringConfig(openNote: PitchClass.b, octave: 3),
+          const StringConfig(openNote: PitchClass.e, octave: 4),
+        ]);
+        expect(dropD.capo, equals(2));
+      });
+
+      test('withTuningFromString preserves capo', () {
+        final capo2 = Instruments.guitar.withCapo(2);
+        final dropD = capo2.withTuningFromString('D2 A2 D3 G3 B3 E4');
+        expect(dropD.capo, equals(2));
+      });
     });
   }, tags: ['unit']);
 }

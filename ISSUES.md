@@ -37,15 +37,18 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Validation that tuning matches string count
   - [x] Unit tests for tuning operations (34 new tests, 96 total)
 
-### [P1] Implement capo support `[GH: -]`
-- **Status:** Planned
+### ~~[P1] Implement capo support~~ `[GH: #1]`
+- **Status:** Done
 - **Labels:** `phase-1`, `feature`
 - **Description:** Capo position affects all fret calculations
 - **Acceptance Criteria:**
-  - [ ] Capo position property on Instrument or separate config
-  - [ ] All note calculations account for capo
-  - [ ] Validation (capo can't exceed fret count)
-  - [ ] Unit tests for capo scenarios
+  - [x] Capo position property on Instrument (default 0)
+  - [x] All note calculations account for capo (`soundingNoteAt` method)
+  - [x] Validation (capo can't be negative or exceed fret count)
+  - [x] `withCapo()` and `withoutCapo()` methods
+  - [x] `playableFrets` getter accounts for capo
+  - [x] Tuning methods preserve capo
+  - [x] Unit tests for capo scenarios (15 tests)
 
 ### [P1] Create `setup` CLI command `[GH: -]`
 - **Status:** Planned
