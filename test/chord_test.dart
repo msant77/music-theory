@@ -163,7 +163,7 @@ void main() {
   group('Chord', () {
     group('constructor', () {
       test('creates chord with root and type', () {
-        final chord = Chord(PitchClass.c, ChordType.major);
+        const chord = Chord(PitchClass.c, ChordType.major);
         expect(chord.root, equals(PitchClass.c));
         expect(chord.type, equals(ChordType.major));
       });

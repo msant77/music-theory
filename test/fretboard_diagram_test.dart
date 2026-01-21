@@ -113,7 +113,7 @@ void main() {
 
     group('with different instruments', () {
       test('renders ukulele voicing', () {
-        final ukulele = Instruments.ukulele;
+        const ukulele = Instruments.ukulele;
         final diagram = FretboardDiagram(ukulele);
         final voicing = Voicing.parse('0003'); // C major
         final result = diagram.render(voicing, chordName: 'C');

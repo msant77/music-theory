@@ -5,18 +5,18 @@ void main() {
   group('Note', () {
     group('constructor', () {
       test('creates note with pitch class and octave', () {
-        final note = Note(PitchClass.c, 4);
+        const note = Note(PitchClass.c, 4);
         expect(note.pitchClass, equals(PitchClass.c));
         expect(note.octave, equals(4));
       });
 
       test('allows negative octaves', () {
-        final note = Note(PitchClass.c, -1);
+        const note = Note(PitchClass.c, -1);
         expect(note.octave, equals(-1));
       });
 
       test('allows high octaves', () {
-        final note = Note(PitchClass.g, 9);
+        const note = Note(PitchClass.g, 9);
         expect(note.octave, equals(9));
       });
     });
@@ -37,31 +37,31 @@ void main() {
 
     group('midiNumber', () {
       test('C4 is MIDI 60', () {
-        expect(Note(PitchClass.c, 4).midiNumber, equals(60));
+        expect(const Note(PitchClass.c, 4).midiNumber, equals(60));
       });
 
       test('A4 is MIDI 69', () {
-        expect(Note(PitchClass.a, 4).midiNumber, equals(69));
+        expect(const Note(PitchClass.a, 4).midiNumber, equals(69));
       });
 
       test('C-1 is MIDI 0', () {
-        expect(Note(PitchClass.c, -1).midiNumber, equals(0));
+        expect(const Note(PitchClass.c, -1).midiNumber, equals(0));
       });
 
       test('G9 is MIDI 127', () {
-        expect(Note(PitchClass.g, 9).midiNumber, equals(127));
+        expect(const Note(PitchClass.g, 9).midiNumber, equals(127));
       });
 
       test('C5 is MIDI 72', () {
-        expect(Note(PitchClass.c, 5).midiNumber, equals(72));
+        expect(const Note(PitchClass.c, 5).midiNumber, equals(72));
       });
 
       test('B3 is MIDI 59', () {
-        expect(Note(PitchClass.b, 3).midiNumber, equals(59));
+        expect(const Note(PitchClass.b, 3).midiNumber, equals(59));
       });
 
       test('E2 (guitar low E) is MIDI 40', () {
-        expect(Note(PitchClass.e, 2).midiNumber, equals(40));
+        expect(const Note(PitchClass.e, 2).midiNumber, equals(40));
       });
     });
 
@@ -108,36 +108,36 @@ void main() {
 
     group('parse', () {
       test('parses natural notes', () {
-        expect(Note.parse('C4'), equals(Note(PitchClass.c, 4)));
-        expect(Note.parse('D5'), equals(Note(PitchClass.d, 5)));
-        expect(Note.parse('E2'), equals(Note(PitchClass.e, 2)));
+        expect(Note.parse('C4'), equals(const Note(PitchClass.c, 4)));
+        expect(Note.parse('D5'), equals(const Note(PitchClass.d, 5)));
+        expect(Note.parse('E2'), equals(const Note(PitchClass.e, 2)));
       });
 
       test('parses sharps', () {
-        expect(Note.parse('C#4'), equals(Note(PitchClass.cSharp, 4)));
-        expect(Note.parse('F#3'), equals(Note(PitchClass.fSharp, 3)));
-        expect(Note.parse('G#5'), equals(Note(PitchClass.gSharp, 5)));
+        expect(Note.parse('C#4'), equals(const Note(PitchClass.cSharp, 4)));
+        expect(Note.parse('F#3'), equals(const Note(PitchClass.fSharp, 3)));
+        expect(Note.parse('G#5'), equals(const Note(PitchClass.gSharp, 5)));
       });
 
       test('parses flats', () {
-        expect(Note.parse('Db4'), equals(Note(PitchClass.cSharp, 4)));
-        expect(Note.parse('Bb3'), equals(Note(PitchClass.aSharp, 3)));
-        expect(Note.parse('Eb5'), equals(Note(PitchClass.dSharp, 5)));
+        expect(Note.parse('Db4'), equals(const Note(PitchClass.cSharp, 4)));
+        expect(Note.parse('Bb3'), equals(const Note(PitchClass.aSharp, 3)));
+        expect(Note.parse('Eb5'), equals(const Note(PitchClass.dSharp, 5)));
       });
 
       test('parses negative octaves', () {
-        expect(Note.parse('C-1'), equals(Note(PitchClass.c, -1)));
-        expect(Note.parse('G#-1'), equals(Note(PitchClass.gSharp, -1)));
+        expect(Note.parse('C-1'), equals(const Note(PitchClass.c, -1)));
+        expect(Note.parse('G#-1'), equals(const Note(PitchClass.gSharp, -1)));
       });
 
       test('is case insensitive', () {
-        expect(Note.parse('c4'), equals(Note(PitchClass.c, 4)));
+        expect(Note.parse('c4'), equals(const Note(PitchClass.c, 4)));
         expect(Note.parse('C#4'), equals(Note.parse('c#4')));
         expect(Note.parse('DB4'), equals(Note.parse('db4')));
       });
 
       test('trims whitespace', () {
-        expect(Note.parse('  C4  '), equals(Note(PitchClass.c, 4)));
+        expect(Note.parse('  C4  '), equals(const Note(PitchClass.c, 4)));
       });
 
       test('throws on empty string', () {
@@ -161,7 +161,7 @@ void main() {
 
     group('tryParse', () {
       test('returns note on valid input', () {
-        expect(Note.tryParse('C4'), equals(Note(PitchClass.c, 4)));
+        expect(Note.tryParse('C4'), equals(const Note(PitchClass.c, 4)));
       });
 
       test('returns null on invalid input', () {
@@ -173,66 +173,66 @@ void main() {
 
     group('transpose', () {
       test('transposes up within octave', () {
-        final c4 = Note(PitchClass.c, 4);
-        expect(c4.transpose(4), equals(Note(PitchClass.e, 4)));
+        const c4 = Note(PitchClass.c, 4);
+        expect(c4.transpose(4), equals(const Note(PitchClass.e, 4)));
       });
 
       test('transposes down within octave', () {
-        final e4 = Note(PitchClass.e, 4);
-        expect(e4.transpose(-4), equals(Note(PitchClass.c, 4)));
+        const e4 = Note(PitchClass.e, 4);
+        expect(e4.transpose(-4), equals(const Note(PitchClass.c, 4)));
       });
 
       test('transposes up across octave boundary', () {
-        final g4 = Note(PitchClass.g, 4);
-        expect(g4.transpose(5), equals(Note(PitchClass.c, 5)));
+        const g4 = Note(PitchClass.g, 4);
+        expect(g4.transpose(5), equals(const Note(PitchClass.c, 5)));
       });
 
       test('transposes down across octave boundary', () {
-        final c4 = Note(PitchClass.c, 4);
-        expect(c4.transpose(-1), equals(Note(PitchClass.b, 3)));
+        const c4 = Note(PitchClass.c, 4);
+        expect(c4.transpose(-1), equals(const Note(PitchClass.b, 3)));
       });
 
       test('transposes by octave', () {
-        final c4 = Note(PitchClass.c, 4);
-        expect(c4.transpose(12), equals(Note(PitchClass.c, 5)));
-        expect(c4.transpose(-12), equals(Note(PitchClass.c, 3)));
+        const c4 = Note(PitchClass.c, 4);
+        expect(c4.transpose(12), equals(const Note(PitchClass.c, 5)));
+        expect(c4.transpose(-12), equals(const Note(PitchClass.c, 3)));
       });
 
       test('transposes by zero', () {
-        final c4 = Note(PitchClass.c, 4);
+        const c4 = Note(PitchClass.c, 4);
         expect(c4.transpose(0), equals(c4));
       });
 
       test('throws on out-of-range result', () {
-        final lowC = Note(PitchClass.c, -1);
+        const lowC = Note(PitchClass.c, -1);
         expect(() => lowC.transpose(-1), throwsRangeError);
 
-        final highG = Note(PitchClass.g, 9);
+        const highG = Note(PitchClass.g, 9);
         expect(() => highG.transpose(1), throwsRangeError);
       });
     });
 
     group('semitonesTo', () {
       test('calculates positive interval', () {
-        final c4 = Note(PitchClass.c, 4);
-        final e4 = Note(PitchClass.e, 4);
+        const c4 = Note(PitchClass.c, 4);
+        const e4 = Note(PitchClass.e, 4);
         expect(c4.semitonesTo(e4), equals(4));
       });
 
       test('calculates negative interval', () {
-        final e4 = Note(PitchClass.e, 4);
-        final c4 = Note(PitchClass.c, 4);
+        const e4 = Note(PitchClass.e, 4);
+        const c4 = Note(PitchClass.c, 4);
         expect(e4.semitonesTo(c4), equals(-4));
       });
 
       test('calculates interval across octaves', () {
-        final c4 = Note(PitchClass.c, 4);
-        final c5 = Note(PitchClass.c, 5);
+        const c4 = Note(PitchClass.c, 4);
+        const c5 = Note(PitchClass.c, 5);
         expect(c4.semitonesTo(c5), equals(12));
       });
 
       test('returns zero for same note', () {
-        final c4 = Note(PitchClass.c, 4);
+        const c4 = Note(PitchClass.c, 4);
         expect(c4.semitonesTo(c4), equals(0));
       });
     });
@@ -243,12 +243,12 @@ void main() {
       });
 
       test('A5 is 880 Hz (one octave up)', () {
-        final a5 = Note(PitchClass.a, 5);
+        const a5 = Note(PitchClass.a, 5);
         expect(a5.frequency, closeTo(880.0, 0.001));
       });
 
       test('A3 is 220 Hz (one octave down)', () {
-        final a3 = Note(PitchClass.a, 3);
+        const a3 = Note(PitchClass.a, 3);
         expect(a3.frequency, closeTo(220.0, 0.001));
       });
 
@@ -259,42 +259,42 @@ void main() {
 
     group('comparison operators', () {
       test('lower note is less than higher note', () {
-        final c4 = Note(PitchClass.c, 4);
-        final d4 = Note(PitchClass.d, 4);
+        const c4 = Note(PitchClass.c, 4);
+        const d4 = Note(PitchClass.d, 4);
         expect(c4 < d4, isTrue);
         expect(d4 < c4, isFalse);
       });
 
       test('compares across octaves', () {
-        final b3 = Note(PitchClass.b, 3);
-        final c4 = Note(PitchClass.c, 4);
+        const b3 = Note(PitchClass.b, 3);
+        const c4 = Note(PitchClass.c, 4);
         expect(b3 < c4, isTrue);
       });
 
       test('equal notes are not less than', () {
-        final c4a = Note(PitchClass.c, 4);
-        final c4b = Note(PitchClass.c, 4);
+        const c4a = Note(PitchClass.c, 4);
+        const c4b = Note(PitchClass.c, 4);
         expect(c4a < c4b, isFalse);
         expect(c4a <= c4b, isTrue);
       });
 
       test('greater than operator', () {
-        final d4 = Note(PitchClass.d, 4);
-        final c4 = Note(PitchClass.c, 4);
+        const d4 = Note(PitchClass.d, 4);
+        const c4 = Note(PitchClass.c, 4);
         expect(d4 > c4, isTrue);
         expect(c4 > d4, isFalse);
       });
 
       test('greater than or equal operator', () {
-        final c4a = Note(PitchClass.c, 4);
-        final c4b = Note(PitchClass.c, 4);
+        const c4a = Note(PitchClass.c, 4);
+        const c4b = Note(PitchClass.c, 4);
         expect(c4a >= c4b, isTrue);
       });
 
       test('compareTo returns correct ordering', () {
-        final c4 = Note(PitchClass.c, 4);
-        final d4 = Note(PitchClass.d, 4);
-        final c4b = Note(PitchClass.c, 4);
+        const c4 = Note(PitchClass.c, 4);
+        const d4 = Note(PitchClass.d, 4);
+        const c4b = Note(PitchClass.c, 4);
 
         expect(c4.compareTo(d4), lessThan(0));
         expect(d4.compareTo(c4), greaterThan(0));
@@ -304,33 +304,33 @@ void main() {
 
     group('arithmetic operators', () {
       test('+ adds semitones', () {
-        final c4 = Note(PitchClass.c, 4);
-        expect(c4 + 4, equals(Note(PitchClass.e, 4)));
+        const c4 = Note(PitchClass.c, 4);
+        expect(c4 + 4, equals(const Note(PitchClass.e, 4)));
       });
 
       test('- subtracts semitones', () {
-        final e4 = Note(PitchClass.e, 4);
-        expect(e4 - 4, equals(Note(PitchClass.c, 4)));
+        const e4 = Note(PitchClass.e, 4);
+        expect(e4 - 4, equals(const Note(PitchClass.c, 4)));
       });
     });
 
     group('equality', () {
       test('equal notes are equal', () {
-        final c4a = Note(PitchClass.c, 4);
-        final c4b = Note(PitchClass.c, 4);
+        const c4a = Note(PitchClass.c, 4);
+        const c4b = Note(PitchClass.c, 4);
         expect(c4a, equals(c4b));
         expect(c4a.hashCode, equals(c4b.hashCode));
       });
 
       test('different pitch classes are not equal', () {
-        final c4 = Note(PitchClass.c, 4);
-        final d4 = Note(PitchClass.d, 4);
+        const c4 = Note(PitchClass.c, 4);
+        const d4 = Note(PitchClass.d, 4);
         expect(c4, isNot(equals(d4)));
       });
 
       test('different octaves are not equal', () {
-        final c4 = Note(PitchClass.c, 4);
-        final c5 = Note(PitchClass.c, 5);
+        const c4 = Note(PitchClass.c, 4);
+        const c5 = Note(PitchClass.c, 5);
         expect(c4, isNot(equals(c5)));
       });
 
@@ -344,19 +344,19 @@ void main() {
 
     group('name', () {
       test('returns pitch class and octave', () {
-        expect(Note(PitchClass.c, 4).name, equals('C4'));
-        expect(Note(PitchClass.cSharp, 4).name, equals('C#4'));
-        expect(Note(PitchClass.b, 3).name, equals('B3'));
+        expect(const Note(PitchClass.c, 4).name, equals('C4'));
+        expect(const Note(PitchClass.cSharp, 4).name, equals('C#4'));
+        expect(const Note(PitchClass.b, 3).name, equals('B3'));
       });
 
       test('handles negative octaves', () {
-        expect(Note(PitchClass.c, -1).name, equals('C-1'));
+        expect(const Note(PitchClass.c, -1).name, equals('C-1'));
       });
     });
 
     group('toString', () {
       test('returns name', () {
-        final note = Note(PitchClass.c, 4);
+        const note = Note(PitchClass.c, 4);
         expect(note.toString(), equals('C4'));
       });
     });

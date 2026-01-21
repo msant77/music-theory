@@ -141,8 +141,7 @@ void main() {
 
       test('respects rootInBass option', () {
         final chord = Chord.parse('C');
-        const options = VoicingCalculatorOptions(rootInBass: true);
-        final calc = VoicingCalculator(guitar, options: options);
+        final calc = VoicingCalculator(guitar);
         final voicings = calc.findVoicings(chord);
 
         for (final voicing in voicings) {
@@ -164,8 +163,7 @@ void main() {
         final voicings = calc.findVoicings(chord);
 
         // Should have more voicings when inversions are allowed
-        final withRootOptions = VoicingCalculatorOptions(rootInBass: true);
-        final withRootCalc = VoicingCalculator(guitar, options: withRootOptions);
+        final withRootCalc = VoicingCalculator(guitar);
         final withRootVoicings = withRootCalc.findVoicings(chord);
 
         expect(voicings.length, greaterThanOrEqualTo(withRootVoicings.length));
@@ -197,7 +195,7 @@ void main() {
       test('returns easiest voicings first', () {
         final chord = Chord.parse('C');
         final calc = VoicingCalculator(guitar);
-        final voicings = calc.findEasiestVoicings(chord, limit: 5);
+        final voicings = calc.findEasiestVoicings(chord);
         final allVoicings = calc.findVoicings(chord);
 
         // First few should match
@@ -222,7 +220,7 @@ void main() {
 
     group('with different instruments', () {
       test('finds voicings for ukulele', () {
-        final ukulele = Instruments.ukulele;
+        const ukulele = Instruments.ukulele;
         final chord = Chord.parse('C');
         final calc = VoicingCalculator(ukulele);
         final voicings = calc.findVoicings(chord);
@@ -236,12 +234,11 @@ void main() {
       });
 
       test('finds voicings for bass', () {
-        final bass = Instruments.bass;
+        const bass = Instruments.bass;
         final chord = Chord.parse('C');
         // Bass usually plays roots and fifths, so relax options
         const options = VoicingCalculatorOptions(
           minStringsPlayed: 2,
-          rootInBass: true,
         );
         final calc = VoicingCalculator(bass, options: options);
         final voicings = calc.findVoicings(chord);

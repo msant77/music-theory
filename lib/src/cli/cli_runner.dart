@@ -523,7 +523,7 @@ class CliRunner {
     final chord = Chord.tryParse(chordStr);
     if (chord == null) {
       stderr.writeln('Error: Could not parse chord "$chordStr"');
-      stderr.writeln('');
+      stderr.writeln();
       stderr.writeln('Expected formats: C, Am, G7, Fmaj7, Bb, F#m, etc.');
       return 1;
     }
@@ -660,7 +660,7 @@ class CliRunner {
     final chord = Chord.tryParse(chordStr);
     if (chord == null) {
       stderr.writeln('Error: Could not parse chord "$chordStr"');
-      stderr.writeln('');
+      stderr.writeln();
       stderr.writeln('Expected formats: C, Am, G7, Fmaj7, Bb, F#m, etc.');
       return 1;
     }

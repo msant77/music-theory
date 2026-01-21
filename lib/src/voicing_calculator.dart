@@ -59,7 +59,6 @@ class VoicingCalculatorOptions {
   static const beginner = VoicingCalculatorOptions(
     maxFretSpan: 3,
     maxFret: 5,
-    rootInBass: true,
     allowInteriorMutes: false,
     minStringsPlayed: 4,
     maxMutedStrings: 1,
@@ -68,22 +67,15 @@ class VoicingCalculatorOptions {
 
   /// Options for intermediate voicings.
   static const intermediate = VoicingCalculatorOptions(
-    maxFretSpan: 4,
     maxFret: 9,
-    rootInBass: true,
-    allowInteriorMutes: true,
     minStringsPlayed: 4,
-    maxMutedStrings: 2,
     maxDifficulty: VoicingDifficulty.intermediate,
   );
 
   /// Options for advanced voicings (all possibilities).
   static const advanced = VoicingCalculatorOptions(
     maxFretSpan: 5,
-    maxFret: 12,
     rootInBass: false,
-    allowInteriorMutes: true,
-    minStringsPlayed: 3,
     maxMutedStrings: 3,
   );
 }

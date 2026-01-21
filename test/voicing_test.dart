@@ -39,7 +39,7 @@ void main() {
     group('properties', () {
       test('isMuted returns true for muted strings', () {
         expect(const StringPosition.muted().isMuted, isTrue);
-        expect(const StringPosition(fret: null).isMuted, isTrue);
+        expect(const StringPosition().isMuted, isTrue);
       });
 
       test('isMuted returns false for played strings', () {
@@ -147,13 +147,13 @@ void main() {
   group('Voicing', () {
     group('constructors', () {
       test('creates voicing from positions', () {
-        final voicing = Voicing(positions: [
-          const StringPosition.muted(),
-          const StringPosition.open(),
-          const StringPosition.fretted(2),
-          const StringPosition.fretted(2),
-          const StringPosition.fretted(1),
-          const StringPosition.open(),
+        const voicing = Voicing(positions: [
+          StringPosition.muted(),
+          StringPosition.open(),
+          StringPosition.fretted(2),
+          StringPosition.fretted(2),
+          StringPosition.fretted(1),
+          StringPosition.open(),
         ]);
         expect(voicing.stringCount, equals(6));
       });
@@ -266,16 +266,16 @@ void main() {
       });
 
       test('requiresBarre returns true if barre is set', () {
-        final voicing = Voicing(
+        const voicing = Voicing(
           positions: [
-            const StringPosition.fretted(1),
-            const StringPosition.fretted(3),
-            const StringPosition.fretted(3),
-            const StringPosition.fretted(2),
-            const StringPosition.fretted(1),
-            const StringPosition.fretted(1),
+            StringPosition.fretted(1),
+            StringPosition.fretted(3),
+            StringPosition.fretted(3),
+            StringPosition.fretted(2),
+            StringPosition.fretted(1),
+            StringPosition.fretted(1),
           ],
-          barre: const Barre(fret: 1, fromString: 0, toIndex: 5),
+          barre: Barre(fret: 1, fromString: 0, toIndex: 5),
         );
         expect(voicing.requiresBarre, isTrue);
       });
@@ -291,16 +291,16 @@ void main() {
 
       test('barre chords have higher difficulty', () {
         // F major barre chord
-        final f = Voicing(
+        const f = Voicing(
           positions: [
-            const StringPosition.fretted(1),
-            const StringPosition.fretted(3),
-            const StringPosition.fretted(3),
-            const StringPosition.fretted(2),
-            const StringPosition.fretted(1),
-            const StringPosition.fretted(1),
+            StringPosition.fretted(1),
+            StringPosition.fretted(3),
+            StringPosition.fretted(3),
+            StringPosition.fretted(2),
+            StringPosition.fretted(1),
+            StringPosition.fretted(1),
           ],
-          barre: const Barre(fret: 1, fromString: 0, toIndex: 5),
+          barre: Barre(fret: 1, fromString: 0, toIndex: 5),
         );
         expect(f.difficultyScore, greaterThan(30));
       });

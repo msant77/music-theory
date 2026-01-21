@@ -35,9 +35,8 @@ class StringPosition {
   const StringPosition.open() : fret = 0, finger = null;
 
   /// Creates a fretted string position.
-  const StringPosition.fretted(int fretNumber, {int? finger})
-      : fret = fretNumber,
-        finger = finger;
+  const StringPosition.fretted(int fretNumber, {this.finger})
+      : fret = fretNumber;
 
   /// Whether this string is muted (not played).
   bool get isMuted => fret == null;
@@ -180,10 +179,10 @@ class Voicing {
     // Check if it uses delimiters (for multi-digit frets)
     if (trimmed.contains('-') || trimmed.contains(' ')) {
       final parts = trimmed.split(RegExp(r'[-\s]+'));
-      frets = parts.map((p) => _parseFretPart(p)).toList();
+      frets = parts.map(_parseFretPart).toList();
     } else {
       // Single characters
-      frets = trimmed.split('').map((c) => _parseFretPart(c)).toList();
+      frets = trimmed.split('').map(_parseFretPart).toList();
     }
 
     return Voicing.fromFrets(frets);
@@ -315,7 +314,7 @@ class Voicing {
     final chordPitches = chord.pitchClasses.toSet();
 
     // All played notes must be in the chord
-    if (!voicingPitches.every((p) => chordPitches.contains(p))) {
+    if (!voicingPitches.every(chordPitches.contains)) {
       return false;
     }
 

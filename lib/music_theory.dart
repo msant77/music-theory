@@ -44,7 +44,7 @@
 ///   print(tuning); // Standard (E2 A2 D3 G3 B3 E4), etc.
 /// }
 /// ```
-library music_theory;
+library;
 
 export 'src/pitch_class.dart';
 export 'src/note.dart';
