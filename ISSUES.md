@@ -84,6 +84,18 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Frequency calculation (A4 = 440 Hz)
   - [x] Unit tests for all note operations (67 tests)
 
+### [P2] Create `note` CLI command `[GH: #16]`
+- **Status:** Planned
+- **Labels:** `phase-2`, `cli`
+- **Description:** CLI command to inspect and play musical notes
+- **Acceptance Criteria:**
+  - [ ] `note <name>` displays note info (pitch class, octave, MIDI number, frequency)
+  - [ ] `note <name> --play` plays the note audio (platform-dependent)
+  - [ ] `note <name> --transpose <semitones>` shows transposed note
+  - [ ] `note <name1> <name2>` shows interval between notes
+  - [ ] `note --midi <number>` converts MIDI number to note
+  - [ ] `--help` with beginner-friendly explanations
+
 ### [P2] Implement Interval model `[GH: #4]`
 - **Status:** Planned
 - **Labels:** `phase-2`, `model`
