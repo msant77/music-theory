@@ -15,27 +15,27 @@ This file tracks development tasks before they become GitHub issues.
 
 ## Phase 1: Instrument Setup
 
-### [P1] Create Instrument and StringConfig models `[GH: -]`
-- **Status:** Planned
+### ~~[P1] Create Instrument and StringConfig models~~ `[GH: -]`
+- **Status:** Done
 - **Labels:** `phase-1`, `model`
 - **Description:** Define how instruments are represented - strings, tunings, fret counts
 - **Acceptance Criteria:**
-  - [ ] `StringConfig` class with open note and fret count
-  - [ ] `Instrument` class with name and list of strings
-  - [ ] Factory constructors for preset instruments (guitar, ukulele, bass, cavaquinho, banjo)
-  - [ ] Custom instrument creation support
-  - [ ] Unit tests for all preset configurations
+  - [x] `StringConfig` class with open note and fret count
+  - [x] `Instrument` class with name and list of strings
+  - [x] Factory constructors for preset instruments (guitar, ukulele, bass, cavaquinho, banjo, 7-string guitar)
+  - [x] Custom instrument creation support
+  - [x] Unit tests for all preset configurations (62 tests)
 
-### [P1] Add tuning presets and custom tuning support `[GH: -]`
-- **Status:** Planned
+### ~~[P1] Add tuning presets and custom tuning support~~ `[GH: -]`
+- **Status:** Done
 - **Labels:** `phase-1`, `feature`
 - **Description:** Common alternate tunings and ability to define custom ones
 - **Acceptance Criteria:**
-  - [ ] Standard tuning for each preset instrument
-  - [ ] Common alternates: Drop D, Open G, DADGAD for guitar
-  - [ ] Tuning parsing from string (e.g., "D A D G B E")
-  - [ ] Validation that tuning matches string count
-  - [ ] Unit tests for tuning operations
+  - [x] Standard tuning for each preset instrument
+  - [x] Common alternates: Drop D, Open G, DADGAD, Open D/E/A, Half/Whole step down, etc.
+  - [x] Tuning parsing from string (e.g., "D A D G B E")
+  - [x] Validation that tuning matches string count
+  - [x] Unit tests for tuning operations (34 new tests, 96 total)
 
 ### [P1] Implement capo support `[GH: -]`
 - **Status:** Planned
