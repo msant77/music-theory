@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
+import '../capo.dart';
 import '../chord.dart';
 import '../fretboard_diagram.dart';
 import '../interval.dart';
 import '../presets.dart';
+import '../transposition.dart';
 import '../voicing.dart';
 import '../voicing_calculator.dart';
 import 'config.dart';
@@ -54,6 +56,8 @@ class CliRunner {
         return _runChord(command);
       case 'voicings':
         return _runVoicings(command);
+      case 'transpose':
+        return _runTranspose(command);
       default:
         stderr.writeln('Unknown command: ${command.name}');
         return 64;
@@ -83,6 +87,9 @@ class CliRunner {
 
     // Voicings subcommand
     parser.addCommand('voicings', _buildVoicingsParser());
+
+    // Transpose subcommand
+    parser.addCommand('transpose', _buildTransposeParser());
 
     return parser;
   }
@@ -131,6 +138,48 @@ class CliRunner {
         help: 'Diagram orientation: vertical, horizontal (overrides config)',
         valueHelp: 'type',
         allowed: ['vertical', 'horizontal'],
+      );
+  }
+
+  ArgParser _buildTransposeParser() {
+    return ArgParser()
+      ..addFlag(
+        'help',
+        abbr: 'h',
+        negatable: false,
+        help: 'Show help for the transpose command.',
+      )
+      ..addOption(
+        'up',
+        abbr: 'u',
+        help: 'Transpose up by N semitones',
+        valueHelp: 'semitones',
+      )
+      ..addOption(
+        'down',
+        abbr: 'd',
+        help: 'Transpose down by N semitones',
+        valueHelp: 'semitones',
+      )
+      ..addFlag(
+        'suggest-capo',
+        abbr: 's',
+        negatable: false,
+        help: 'Suggest capo positions for easier shapes',
+      )
+      ..addOption(
+        'spelling',
+        help: 'Prefer sharps or flats: sharps, flats',
+        valueHelp: 'style',
+        allowed: ['sharps', 'flats'],
+        defaultsTo: 'sharps',
+      )
+      ..addOption(
+        'limit',
+        abbr: 'n',
+        help: 'Maximum capo suggestions to show (with --suggest-capo)',
+        valueHelp: 'count',
+        defaultsTo: '5',
       );
   }
 
@@ -437,6 +486,7 @@ class CliRunner {
     print('  setup      Configure your instrument, tuning, and capo');
     print('  chord      Show chord notes and formula');
     print('  voicings   Show how to play a chord on your instrument');
+    print('  transpose  Transpose chords up or down, suggest capo positions');
     print('');
     print('Global options:');
     print(parser.usage);
@@ -811,5 +861,177 @@ class CliRunner {
     print('');
     print('Note: Uses the instrument configured with "music_theory setup".');
     print('      Default is standard tuning guitar.');
+  }
+
+  // ==================== Transpose Command ====================
+
+  Future<int> _runTranspose(ArgResults args) async {
+    // Help
+    if (args['help'] as bool) {
+      _printTransposeHelp();
+      return 0;
+    }
+
+    final rest = args.rest;
+    if (rest.isEmpty) {
+      _printTransposeHelp();
+      return 0;
+    }
+
+    // Parse chord(s) - could be a single chord or a progression
+    final input = rest.join(' ');
+    final progression = ChordProgression.tryParse(input);
+    if (progression == null || progression.isEmpty) {
+      stderr.writeln('Error: Could not parse chords "$input"');
+      stderr.writeln();
+      stderr.writeln('Expected: Single chord (Am) or progression (C Am F G)');
+      return 1;
+    }
+
+    // Parse transposition options
+    final upStr = args['up'] as String?;
+    final downStr = args['down'] as String?;
+    final suggestCapo = args['suggest-capo'] as bool;
+    final spellingStr = args['spelling'] as String;
+    final limitStr = args['limit'] as String;
+
+    final spelling = spellingStr == 'flats'
+        ? SpellingPreference.flats
+        : SpellingPreference.sharps;
+    final limit = int.tryParse(limitStr) ?? 5;
+
+    // Validate options
+    if (upStr != null && downStr != null) {
+      stderr.writeln('Error: Cannot use both --up and --down');
+      return 1;
+    }
+
+    // Handle capo suggestion mode
+    if (suggestCapo) {
+      return _runCapoSuggestion(progression, limit);
+    }
+
+    // Handle transposition
+    if (upStr == null && downStr == null) {
+      // No transposition - just show the chords with spelling
+      _printProgression(progression, spelling, 0);
+      return 0;
+    }
+
+    int semitones;
+    if (upStr != null) {
+      semitones = int.tryParse(upStr) ?? 0;
+      if (semitones < 0) semitones = -semitones;
+    } else {
+      semitones = -(int.tryParse(downStr!) ?? 0);
+      if (semitones > 0) semitones = -semitones;
+    }
+
+    final transposed = progression.transpose(semitones);
+    _printProgression(transposed, spelling, semitones);
+    return 0;
+  }
+
+  void _printProgression(
+    ChordProgression progression,
+    SpellingPreference spelling,
+    int semitones,
+  ) {
+    print('');
+    if (semitones == 0) {
+      print('  Chords:');
+    } else if (semitones > 0) {
+      print('  Transposed up $semitones semitone${semitones == 1 ? "" : "s"}:');
+    } else {
+      print('  Transposed down ${-semitones} semitone${semitones == -1 ? "" : "s"}:');
+    }
+    print('');
+
+    final spelled = progression.spell(spelling);
+    print('  ${spelled.join("  ")}');
+    print('');
+
+    // Show the notes in each chord
+    for (var i = 0; i < progression.chords.length; i++) {
+      final chord = progression.chords[i];
+      final chordSpelling = spellChord(chord, spelling);
+      final notes = chord.pitchClasses
+          .map((pc) => spellPitchClass(pc, spelling))
+          .join(' - ');
+      print('  $chordSpelling: $notes');
+    }
+    print('');
+  }
+
+  Future<int> _runCapoSuggestion(ChordProgression progression, int limit) async {
+    final config = await MusicTheoryConfig.load();
+    final instrument = config.toInstrument();
+
+    final suggester = CapoSuggester(instrument);
+    final suggestions = suggester.suggest(progression.chords);
+
+    print('');
+    print('  Capo suggestions for: ${progression.toSymbolString()}');
+    print('  on ${instrument.name}');
+    print('');
+
+    if (suggestions.isEmpty) {
+      print('  No suggestions available.');
+      return 0;
+    }
+
+    final displayed = suggestions.take(limit).toList();
+    for (var i = 0; i < displayed.length; i++) {
+      final s = displayed[i];
+      final capoLabel = s.capoFret == 0 ? 'No capo' : 'Capo ${s.capoFret}';
+      final shapes = s.shapeSymbols.join('  ');
+      final difficulty = s.difficultyScore.toStringAsFixed(1);
+      print('  ${i + 1}. $capoLabel: play $shapes (difficulty: $difficulty)');
+    }
+    print('');
+
+    // Show the best suggestion with more detail
+    final best = displayed.first;
+    if (best.capoFret > 0) {
+      print('  Best option: Put capo on fret ${best.capoFret}');
+      print('  Then play these shapes:');
+      for (var i = 0; i < best.shapes.length; i++) {
+        print('    ${progression.chords[i].symbol} -> ${best.shapes[i].symbol}');
+      }
+      print('');
+    }
+
+    return 0;
+  }
+
+  void _printTransposeHelp() {
+    print('music_theory transpose - Transpose chords');
+    print('');
+    print('Usage: music_theory transpose <chords> [options]');
+    print('');
+    print('Arguments:');
+    print('  chords    One or more chord names: "Am" or "C Am F G"');
+    print('');
+    print('Options:');
+    print('  -u, --up <n>          Transpose up by N semitones');
+    print('  -d, --down <n>        Transpose down by N semitones');
+    print('  -s, --suggest-capo    Suggest capo positions for easier shapes');
+    print('      --spelling <s>    Prefer sharps or flats (default: sharps)');
+    print('  -n, --limit <n>       Max capo suggestions to show (default: 5)');
+    print('  -h, --help            Show this help');
+    print('');
+    print('Examples:');
+    print('  music_theory transpose Am --up 2         Transpose Am up 2 semitones -> Bm');
+    print('  music_theory transpose "C Am F G" --up 5 Transpose progression to F Dm Bb C');
+    print('  music_theory transpose F --down 1        Transpose F down to E');
+    print('  music_theory transpose "F Bb C" -s       Suggest capo positions');
+    print('  music_theory transpose C# --spelling flats  Show as Db instead of C#');
+    print('');
+    print('Common transpositions:');
+    print('  1 semitone  = half step     (C -> C#)');
+    print('  2 semitones = whole step    (C -> D)');
+    print('  5 semitones = perfect 4th   (C -> F)');
+    print('  7 semitones = perfect 5th   (C -> G)');
+    print('  12 semitones = octave       (C -> C)');
   }
 }

@@ -213,15 +213,16 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Consider common open chord shapes (C, G, D, E, A, Am, Em, Dm)
   - [x] Unit tests with known examples (F → capo 1 + E shape) - 31 tests
 
-### [P4] Create `transpose` CLI command `[GH: #12]`
-- **Status:** Planned
+### ~~[P4] Create `transpose` CLI command~~ `[GH: #12]`
+- **Status:** Done
 - **Labels:** `phase-4`, `cli`
 - **Description:** Change the key of chords
 - **Acceptance Criteria:**
-  - [ ] `transpose <chord> --up <n>` or `--down <n>`
-  - [ ] `transpose "<progression>" --up <n>` for multiple chords
-  - [ ] `--suggest-capo` for easier shapes
-  - [ ] `--help` explaining when to use transposition
+  - [x] `transpose <chord> --up <n>` or `--down <n>`
+  - [x] `transpose "<progression>" --up <n>` for multiple chords
+  - [x] `--suggest-capo` for easier shapes (uses CapoSuggester)
+  - [x] `--spelling sharps|flats` for enharmonic preference
+  - [x] `--help` explaining when to use transposition - 22 tests
 
 ---
 
