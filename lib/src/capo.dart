@@ -300,7 +300,13 @@ class CommonCapoPositions {
   static List<int> _calculateCapoPositions(Chord chord) {
     final easyRoots = chord.type == ChordType.minor
         ? [PitchClass.a, PitchClass.e, PitchClass.d]
-        : [PitchClass.c, PitchClass.g, PitchClass.d, PitchClass.e, PitchClass.a];
+        : [
+            PitchClass.c,
+            PitchClass.g,
+            PitchClass.d,
+            PitchClass.e,
+            PitchClass.a
+          ];
 
     final positions = <int>[];
     for (final easyRoot in easyRoots) {

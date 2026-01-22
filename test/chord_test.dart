@@ -82,10 +82,14 @@ void main() {
 
       test('halfDiminished7 has correct intervals', () {
         expect(ChordType.halfDiminished7.intervals.length, equals(4));
-        expect(ChordType.halfDiminished7.intervals[0].semitones, equals(0)); // Root
-        expect(ChordType.halfDiminished7.intervals[1].semitones, equals(3)); // m3
-        expect(ChordType.halfDiminished7.intervals[2].semitones, equals(6)); // d5
-        expect(ChordType.halfDiminished7.intervals[3].semitones, equals(10)); // m7
+        expect(ChordType.halfDiminished7.intervals[0].semitones,
+            equals(0)); // Root
+        expect(
+            ChordType.halfDiminished7.intervals[1].semitones, equals(3)); // m3
+        expect(
+            ChordType.halfDiminished7.intervals[2].semitones, equals(6)); // d5
+        expect(
+            ChordType.halfDiminished7.intervals[3].semitones, equals(10)); // m7
       });
     });
 
@@ -340,12 +344,14 @@ void main() {
     group('pitchClasses', () {
       test('C major has C, E, G', () {
         final chord = Chord.parse('C');
-        expect(chord.pitchClasses, equals([PitchClass.c, PitchClass.e, PitchClass.g]));
+        expect(chord.pitchClasses,
+            equals([PitchClass.c, PitchClass.e, PitchClass.g]));
       });
 
       test('A minor has A, C, E', () {
         final chord = Chord.parse('Am');
-        expect(chord.pitchClasses, equals([PitchClass.a, PitchClass.c, PitchClass.e]));
+        expect(chord.pitchClasses,
+            equals([PitchClass.a, PitchClass.c, PitchClass.e]));
       });
 
       test('G7 has G, B, D, F', () {

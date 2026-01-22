@@ -20,19 +20,29 @@ void main() {
     });
 
     test('spells accidentals as sharps when requested', () {
-      expect(spellPitchClass(PitchClass.cSharp, SpellingPreference.sharps), 'C#');
-      expect(spellPitchClass(PitchClass.dSharp, SpellingPreference.sharps), 'D#');
-      expect(spellPitchClass(PitchClass.fSharp, SpellingPreference.sharps), 'F#');
-      expect(spellPitchClass(PitchClass.gSharp, SpellingPreference.sharps), 'G#');
-      expect(spellPitchClass(PitchClass.aSharp, SpellingPreference.sharps), 'A#');
+      expect(
+          spellPitchClass(PitchClass.cSharp, SpellingPreference.sharps), 'C#');
+      expect(
+          spellPitchClass(PitchClass.dSharp, SpellingPreference.sharps), 'D#');
+      expect(
+          spellPitchClass(PitchClass.fSharp, SpellingPreference.sharps), 'F#');
+      expect(
+          spellPitchClass(PitchClass.gSharp, SpellingPreference.sharps), 'G#');
+      expect(
+          spellPitchClass(PitchClass.aSharp, SpellingPreference.sharps), 'A#');
     });
 
     test('spells accidentals as flats when requested', () {
-      expect(spellPitchClass(PitchClass.cSharp, SpellingPreference.flats), 'Db');
-      expect(spellPitchClass(PitchClass.dSharp, SpellingPreference.flats), 'Eb');
-      expect(spellPitchClass(PitchClass.fSharp, SpellingPreference.flats), 'Gb');
-      expect(spellPitchClass(PitchClass.gSharp, SpellingPreference.flats), 'Ab');
-      expect(spellPitchClass(PitchClass.aSharp, SpellingPreference.flats), 'Bb');
+      expect(
+          spellPitchClass(PitchClass.cSharp, SpellingPreference.flats), 'Db');
+      expect(
+          spellPitchClass(PitchClass.dSharp, SpellingPreference.flats), 'Eb');
+      expect(
+          spellPitchClass(PitchClass.fSharp, SpellingPreference.flats), 'Gb');
+      expect(
+          spellPitchClass(PitchClass.gSharp, SpellingPreference.flats), 'Ab');
+      expect(
+          spellPitchClass(PitchClass.aSharp, SpellingPreference.flats), 'Bb');
     });
   });
 

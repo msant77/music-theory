@@ -124,7 +124,8 @@ void main() {
       });
 
       test('returns error for invalid key', () async {
-        final exitCode = await runner.run(['analyze', 'C', 'G', '--key', 'XYZ']);
+        final exitCode =
+            await runner.run(['analyze', 'C', 'G', '--key', 'XYZ']);
         expect(exitCode, 1);
       });
     });

@@ -86,9 +86,8 @@ class Key {
   List<PitchClass> get scale {
     // Major scale intervals: W W H W W W H (2 2 1 2 2 2 1)
     // Minor scale intervals: W H W W H W W (2 1 2 2 1 2 2)
-    final intervals = isMajor
-        ? const [0, 2, 4, 5, 7, 9, 11]
-        : const [0, 2, 3, 5, 7, 8, 10];
+    final intervals =
+        isMajor ? const [0, 2, 4, 5, 7, 9, 11] : const [0, 2, 3, 5, 7, 8, 10];
 
     return intervals.map(tonic.transpose).toList();
   }
@@ -167,7 +166,8 @@ class Key {
   }
 
   /// Returns the tonic with appropriate enharmonic spelling.
-  String spelledTonic({SpellingPreference preference = SpellingPreference.auto}) {
+  String spelledTonic(
+      {SpellingPreference preference = SpellingPreference.auto}) {
     final pref = preference == SpellingPreference.auto
         ? (prefersFlats ? SpellingPreference.flats : SpellingPreference.sharps)
         : preference;
@@ -283,7 +283,8 @@ class ChordProgression {
   bool get isNotEmpty => chords.isNotEmpty;
 
   /// Returns the chord symbols as a space-separated string.
-  String toSymbolString({SpellingPreference spelling = SpellingPreference.sharps}) {
+  String toSymbolString(
+      {SpellingPreference spelling = SpellingPreference.sharps}) {
     return spell(spelling).join(' ');
   }
 

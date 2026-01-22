@@ -256,7 +256,13 @@ class Interval implements Comparable<Interval> {
 
   /// Whether this is a perfect interval (unison, 4th, 5th, octave).
   bool get isPerfect =>
-      number == 1 || number == 4 || number == 5 || number == 8 || number % 7 == 1 || number % 7 == 4 || number % 7 == 5;
+      number == 1 ||
+      number == 4 ||
+      number == 5 ||
+      number == 8 ||
+      number % 7 == 1 ||
+      number % 7 == 4 ||
+      number % 7 == 5;
 
   /// Whether this interval spans more than one octave.
   bool get isCompound => semitones > 12;
@@ -331,7 +337,10 @@ class Interval implements Comparable<Interval> {
 
   @override
   bool operator ==(Object other) =>
-      other is Interval && other.semitones == semitones && other.quality == quality && other.number == number;
+      other is Interval &&
+      other.semitones == semitones &&
+      other.quality == quality &&
+      other.number == number;
 
   @override
   int get hashCode => Object.hash(semitones, quality, number);

@@ -34,7 +34,8 @@ void main() {
       });
 
       test('shows major seventh chord info', () async {
-        final output = await _captureOutput(() => runner.run(['chord', 'Cmaj7']));
+        final output =
+            await _captureOutput(() => runner.run(['chord', 'Cmaj7']));
         expect(output, contains('C major 7th'));
         expect(output, contains('C - E - G - B'));
         expect(output, contains('R - M3 - P5 - M7'));
@@ -54,20 +55,23 @@ void main() {
       });
 
       test('shows diminished chord', () async {
-        final output = await _captureOutput(() => runner.run(['chord', 'Bdim']));
+        final output =
+            await _captureOutput(() => runner.run(['chord', 'Bdim']));
         expect(output, contains('B diminished'));
         expect(output, contains('B - D - F'));
         expect(output, contains('d5'));
       });
 
       test('shows augmented chord', () async {
-        final output = await _captureOutput(() => runner.run(['chord', 'Caug']));
+        final output =
+            await _captureOutput(() => runner.run(['chord', 'Caug']));
         expect(output, contains('C augmented'));
         expect(output, contains('C - E - G#'));
       });
 
       test('shows suspended chord', () async {
-        final output = await _captureOutput(() => runner.run(['chord', 'Dsus4']));
+        final output =
+            await _captureOutput(() => runner.run(['chord', 'Dsus4']));
         expect(output, contains('D suspended 4th'));
         expect(output, contains('D - G - A'));
       });
@@ -82,21 +86,24 @@ void main() {
 
     group('chord comparison', () {
       test('compares two chords', () async {
-        final output = await _captureOutput(() => runner.run(['chord', 'C', 'Am']));
+        final output =
+            await _captureOutput(() => runner.run(['chord', 'C', 'Am']));
         expect(output, contains('Comparing C and Am'));
         expect(output, contains('C - E - G'));
         expect(output, contains('A - C - E'));
       });
 
       test('shows common notes', () async {
-        final output = await _captureOutput(() => runner.run(['chord', 'C', 'Am']));
+        final output =
+            await _captureOutput(() => runner.run(['chord', 'C', 'Am']));
         expect(output, contains('Common notes'));
         expect(output, contains('C'));
         expect(output, contains('E'));
       });
 
       test('shows unique notes', () async {
-        final output = await _captureOutput(() => runner.run(['chord', 'C', 'Am']));
+        final output =
+            await _captureOutput(() => runner.run(['chord', 'C', 'Am']));
         expect(output, contains('Only in C'));
         expect(output, contains('G'));
         expect(output, contains('Only in Am'));
@@ -104,7 +111,8 @@ void main() {
       });
 
       test('compares chords with no common notes', () async {
-        final output = await _captureOutput(() => runner.run(['chord', 'C', 'F#']));
+        final output =
+            await _captureOutput(() => runner.run(['chord', 'C', 'F#']));
         expect(output, contains('No common notes'));
       });
     });
@@ -133,7 +141,8 @@ void main() {
 
     group('help', () {
       test('shows help with --help flag', () async {
-        final output = await _captureOutput(() => runner.run(['chord', '--help']));
+        final output =
+            await _captureOutput(() => runner.run(['chord', '--help']));
         expect(output, contains('music_theory chord'));
         expect(output, contains('Show chord notes and formula'));
       });
@@ -149,13 +158,15 @@ void main() {
       });
 
       test('help shows examples', () async {
-        final output = await _captureOutput(() => runner.run(['chord', '--help']));
+        final output =
+            await _captureOutput(() => runner.run(['chord', '--help']));
         expect(output, contains('Examples'));
         expect(output, contains('music_theory chord Am'));
       });
 
       test('help shows supported chord types', () async {
-        final output = await _captureOutput(() => runner.run(['chord', '--help']));
+        final output =
+            await _captureOutput(() => runner.run(['chord', '--help']));
         expect(output, contains('Supported chord types'));
         expect(output, contains('Major'));
         expect(output, contains('Minor'));

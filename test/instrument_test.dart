@@ -112,7 +112,8 @@ void main() {
 
       test('different fret counts are not equal', () {
         const a = StringConfig(openNote: PitchClass.e, octave: 2);
-        const b = StringConfig(openNote: PitchClass.e, octave: 2, fretCount: 20);
+        const b =
+            StringConfig(openNote: PitchClass.e, octave: 2, fretCount: 20);
         expect(a, isNot(equals(b)));
       });
     });

@@ -73,7 +73,8 @@ void main() {
 
       test('uses flats when specified', () async {
         final output = await _captureOutput(
-          () => runner.run(['transpose', 'C', '--up', '1', '--spelling', 'flats']),
+          () => runner
+              .run(['transpose', 'C', '--up', '1', '--spelling', 'flats']),
         );
         expect(output, contains('Db'));
       });
@@ -117,7 +118,8 @@ void main() {
 
     group('error handling', () {
       test('rejects both --up and --down', () async {
-        final exitCode = await runner.run(['transpose', 'C', '--up', '2', '--down', '1']);
+        final exitCode =
+            await runner.run(['transpose', 'C', '--up', '2', '--down', '1']);
         expect(exitCode, 1);
       });
 

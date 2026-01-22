@@ -13,33 +13,38 @@ void main() {
   group('voicings command', () {
     group('basic functionality', () {
       test('shows voicings for Am chord', () async {
-        final output = await _captureOutput(() => runner.run(['voicings', 'Am']));
+        final output =
+            await _captureOutput(() => runner.run(['voicings', 'Am']));
         expect(output, contains('A minor'));
         expect(output, contains('Am'));
         expect(output, contains('voicing'));
       });
 
       test('shows voicings for C chord', () async {
-        final output = await _captureOutput(() => runner.run(['voicings', 'C']));
+        final output =
+            await _captureOutput(() => runner.run(['voicings', 'C']));
         expect(output, contains('C major'));
         expect(output, contains('voicing'));
       });
 
       test('shows voicings for G7 chord', () async {
-        final output = await _captureOutput(() => runner.run(['voicings', 'G7']));
+        final output =
+            await _captureOutput(() => runner.run(['voicings', 'G7']));
         expect(output, contains('G dominant 7th'));
         expect(output, contains('G7'));
       });
 
       test('shows fretboard diagram by default', () async {
-        final output = await _captureOutput(() => runner.run(['voicings', 'Am']));
+        final output =
+            await _captureOutput(() => runner.run(['voicings', 'Am']));
         // Fretboard uses box drawing characters
         expect(output, contains('─'));
         expect(output, contains('│'));
       });
 
       test('shows string names in diagram', () async {
-        final output = await _captureOutput(() => runner.run(['voicings', 'Am']));
+        final output =
+            await _captureOutput(() => runner.run(['voicings', 'Am']));
         expect(output, contains('E')); // String names
         expect(output, contains('A'));
         expect(output, contains('D'));
@@ -57,8 +62,8 @@ void main() {
       });
 
       test('-c is alias for --compact', () async {
-        final output = await _captureOutput(
-            () => runner.run(['voicings', 'Am', '-c']));
+        final output =
+            await _captureOutput(() => runner.run(['voicings', 'Am', '-c']));
         expect(output, contains('X02210'));
       });
 
@@ -75,23 +80,30 @@ void main() {
       });
 
       test('--level beginner shows easy voicings', () async {
-        final output = await _captureOutput(
-            () => runner.run(['voicings', 'Am', '--compact', '--level', 'beginner']));
+        final output = await _captureOutput(() =>
+            runner.run(['voicings', 'Am', '--compact', '--level', 'beginner']));
         expect(output, contains('easy'));
         // Should not contain hard
         expect(output.toLowerCase(), isNot(contains('hard')));
       });
 
       test('--level intermediate shows medium voicings', () async {
-        final output = await _captureOutput(
-            () => runner.run(['voicings', 'C', '--compact', '--level', 'intermediate']));
+        final output = await _captureOutput(() => runner
+            .run(['voicings', 'C', '--compact', '--level', 'intermediate']));
         // Should include easy and medium
         expect(output, anyOf(contains('easy'), contains('medium')));
       });
 
       test('--level advanced shows all difficulty levels', () async {
-        final output = await _captureOutput(
-            () => runner.run(['voicings', 'C', '--compact', '--level', 'advanced', '--limit', '20']));
+        final output = await _captureOutput(() => runner.run([
+              'voicings',
+              'C',
+              '--compact',
+              '--level',
+              'advanced',
+              '--limit',
+              '20'
+            ]));
         // Should have various difficulty levels with enough voicings
         expect(output, isNotEmpty);
       });
@@ -112,13 +124,15 @@ void main() {
 
     group('help', () {
       test('shows help with --help flag', () async {
-        final output = await _captureOutput(() => runner.run(['voicings', '--help']));
+        final output =
+            await _captureOutput(() => runner.run(['voicings', '--help']));
         expect(output, contains('music_theory voicings'));
         expect(output, contains('Show how to play a chord'));
       });
 
       test('shows help with -h flag', () async {
-        final output = await _captureOutput(() => runner.run(['voicings', '-h']));
+        final output =
+            await _captureOutput(() => runner.run(['voicings', '-h']));
         expect(output, contains('music_theory voicings'));
       });
 
@@ -128,13 +142,15 @@ void main() {
       });
 
       test('help shows examples', () async {
-        final output = await _captureOutput(() => runner.run(['voicings', '--help']));
+        final output =
+            await _captureOutput(() => runner.run(['voicings', '--help']));
         expect(output, contains('Examples'));
         expect(output, contains('music_theory voicings Am'));
       });
 
       test('help mentions setup command', () async {
-        final output = await _captureOutput(() => runner.run(['voicings', '--help']));
+        final output =
+            await _captureOutput(() => runner.run(['voicings', '--help']));
         expect(output, contains('setup'));
       });
 
@@ -157,14 +173,16 @@ void main() {
         final output = await _captureOutput(
             () => runner.run(['voicings', 'Am', '--compact']));
         // Should have at least one difficulty indicator
-        expect(output, anyOf(contains('easy'), contains('medium'), contains('hard')));
+        expect(output,
+            anyOf(contains('easy'), contains('medium'), contains('hard')));
       });
 
       test('shows difficulty label for each voicing in diagram mode', () async {
         final output = await _captureOutput(
             () => runner.run(['voicings', 'Am', '--limit', '2']));
         // Should have difficulty in voicing header
-        expect(output, anyOf(contains('easy'), contains('medium'), contains('hard')));
+        expect(output,
+            anyOf(contains('easy'), contains('medium'), contains('hard')));
       });
     });
   });

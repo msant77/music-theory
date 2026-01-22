@@ -60,13 +60,15 @@ void main() {
 
       test('augmentedFourth (tritone) is 6 semitones', () {
         expect(Interval.augmentedFourth.semitones, equals(6));
-        expect(Interval.augmentedFourth.quality, equals(IntervalQuality.augmented));
+        expect(Interval.augmentedFourth.quality,
+            equals(IntervalQuality.augmented));
         expect(Interval.augmentedFourth.number, equals(4));
       });
 
       test('diminishedFifth (tritone) is 6 semitones', () {
         expect(Interval.diminishedFifth.semitones, equals(6));
-        expect(Interval.diminishedFifth.quality, equals(IntervalQuality.diminished));
+        expect(Interval.diminishedFifth.quality,
+            equals(IntervalQuality.diminished));
         expect(Interval.diminishedFifth.number, equals(5));
       });
 
@@ -347,8 +349,10 @@ void main() {
       });
 
       test('compareTo returns correct ordering', () {
-        expect(Interval.minorSecond.compareTo(Interval.majorSecond), lessThan(0));
-        expect(Interval.perfectFifth.compareTo(Interval.perfectFourth), greaterThan(0));
+        expect(
+            Interval.minorSecond.compareTo(Interval.majorSecond), lessThan(0));
+        expect(Interval.perfectFifth.compareTo(Interval.perfectFourth),
+            greaterThan(0));
         expect(Interval.majorThird.compareTo(Interval.majorThird), equals(0));
       });
     });
@@ -357,7 +361,8 @@ void main() {
       test('equal intervals are equal', () {
         expect(Interval.majorThird, equals(Interval.majorThird));
         expect(
-          const Interval(semitones: 4, quality: IntervalQuality.major, number: 3),
+          const Interval(
+              semitones: 4, quality: IntervalQuality.major, number: 3),
           equals(Interval.majorThird),
         );
       });
@@ -368,7 +373,8 @@ void main() {
 
       test('same semitones but different quality/number are not equal', () {
         // Augmented 4th and diminished 5th both have 6 semitones
-        expect(Interval.augmentedFourth, isNot(equals(Interval.diminishedFifth)));
+        expect(
+            Interval.augmentedFourth, isNot(equals(Interval.diminishedFifth)));
       });
     });
 

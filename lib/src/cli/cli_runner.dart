@@ -234,7 +234,8 @@ class CliRunner {
       ..addOption(
         'instrument',
         abbr: 'i',
-        help: 'Set instrument: guitar, bass, ukulele, cavaquinho, banjo, guitar7',
+        help:
+            'Set instrument: guitar, bass, ukulele, cavaquinho, banjo, guitar7',
         valueHelp: 'name',
       )
       ..addOption(
@@ -337,7 +338,8 @@ class CliRunner {
     final tuning = args['tuning'] as String?;
     if (tuning == null) {
       stderr.writeln('Error: --custom requires --tuning');
-      stderr.writeln('Example: music_theory setup --custom --tuning BEADGBE --frets 22');
+      stderr.writeln(
+          'Example: music_theory setup --custom --tuning BEADGBE --frets 22');
       return 1;
     }
 
@@ -371,7 +373,8 @@ class CliRunner {
       normalizedTuning = normalizeTuningString(tuning);
     } catch (e) {
       stderr.writeln('Error: Invalid tuning format "$tuning"');
-      stderr.writeln('Expected: "BEADGBE", "B1E2A2D3G3B3E4", or "B1 E2 A2 D3 G3 B3 E4"');
+      stderr.writeln(
+          'Expected: "BEADGBE", "B1E2A2D3G3B3E4", or "B1 E2 A2 D3 G3 B3 E4"');
       return 1;
     }
 
@@ -420,7 +423,8 @@ class CliRunner {
       final instrumentName = args['instrument'] as String;
       final available = getAvailableInstruments();
       if (!available.contains(instrumentName.toLowerCase()) &&
-          !['guitar7', '7string', '7-string'].contains(instrumentName.toLowerCase())) {
+          !['guitar7', '7string', '7-string']
+              .contains(instrumentName.toLowerCase())) {
         stderr.writeln('Error: Unknown instrument "$instrumentName"');
         stderr.writeln('Available: ${available.join(", ")}');
         stderr.writeln();
@@ -441,7 +445,8 @@ class CliRunner {
       // First check if it's a preset tuning name
       final available = getAvailableTunings(config.instrument);
       final found = available.any(
-        (t) => t.toLowerCase() == tuningInput.toLowerCase() ||
+        (t) =>
+            t.toLowerCase() == tuningInput.toLowerCase() ||
             t.toLowerCase().replaceAll(' ', '') == tuningInput.toLowerCase(),
       );
 
@@ -460,7 +465,8 @@ class CliRunner {
             clearTuningName: true,
           );
         } catch (e) {
-          stderr.writeln('Error: "$tuningInput" is not a known tuning for ${config.instrument}');
+          stderr.writeln(
+              'Error: "$tuningInput" is not a known tuning for ${config.instrument}');
           stderr.writeln('       and could not be parsed as custom notes.');
           stderr.writeln();
           stderr.writeln('Available tunings: ${available.join(", ")}');
@@ -506,7 +512,8 @@ class CliRunner {
   }
 
   void _printUsage(ArgParser parser) {
-    print('music_theory - Music theory utilities for notes, chords, and instruments');
+    print(
+        'music_theory - Music theory utilities for notes, chords, and instruments');
     print('');
     print('Usage: music_theory <command> [options]');
     print('');
@@ -515,12 +522,14 @@ class CliRunner {
     print('  chord      Show chord notes and formula');
     print('  voicings   Show how to play a chord on your instrument');
     print('  transpose  Transpose chords up or down, suggest capo positions');
-    print('  analyze    Analyze a chord progression (key, Roman numerals, patterns)');
+    print(
+        '  analyze    Analyze a chord progression (key, Roman numerals, patterns)');
     print('');
     print('Global options:');
     print(parser.usage);
     print('');
-    print('Run "music_theory <command> --help" for more information on a command.');
+    print(
+        'Run "music_theory <command> --help" for more information on a command.');
   }
 
   void _printSetupHelp() {
@@ -529,37 +538,46 @@ class CliRunner {
     print('Usage: music_theory setup [options]');
     print('');
     print('Preset instruments:');
-    print('  -i, --instrument <name>    Set instrument: guitar, bass, ukulele, etc.');
+    print(
+        '  -i, --instrument <name>    Set instrument: guitar, bass, ukulele, etc.');
     print('  -t, --tuning <tuning>      Set tuning by name or notes');
     print('  -c, --capo <fret>          Set capo position (0-22)');
     print('');
     print('Custom instruments:');
     print('      --custom               Create a fully custom instrument');
-    print('  -n, --name <name>          Name for custom instrument (default: "Custom")');
-    print('  -t, --tuning <notes>       Tuning: "BEADGBE" or "B1 E2 A2 D3 G3 B3 E4"');
-    print('  -f, --frets <count>        Frets: "22" or "22,22,22,22,5" (per-string)');
+    print(
+        '  -n, --name <name>          Name for custom instrument (default: "Custom")');
+    print(
+        '  -t, --tuning <notes>       Tuning: "BEADGBE" or "B1 E2 A2 D3 G3 B3 E4"');
+    print(
+        '  -f, --frets <count>        Frets: "22" or "22,22,22,22,5" (per-string)');
     print('');
     print('Display:');
-    print('  -o, --orientation <type>   Diagram style: vertical (default), horizontal');
+    print(
+        '  -o, --orientation <type>   Diagram style: vertical (default), horizontal');
     print('');
     print('Other:');
     print('  -s, --show                 Show current configuration');
-    print('      --reset                Reset to default (guitar, standard, no capo)');
-    print('  -l, --list                 List all preset instruments and tunings');
+    print(
+        '      --reset                Reset to default (guitar, standard, no capo)');
+    print(
+        '  -l, --list                 List all preset instruments and tunings');
     print('  -h, --help                 Show this help');
     print('');
     print('Examples:');
     print('  music_theory setup --instrument guitar --tuning "Drop D"');
     print('  music_theory setup --instrument guitar --tuning DADGAD');
     print('  music_theory setup --capo 2');
-    print('  music_theory setup --custom --name "7-string" --tuning BEADGBE --frets 24');
+    print(
+        '  music_theory setup --custom --name "7-string" --tuning BEADGBE --frets 24');
     print('  music_theory setup --show');
   }
 
   void _printConfig(MusicTheoryConfig config) {
     print('');
     print('Current configuration:');
-    print('  Instrument:  ${config.instrument}${config.isCustom ? " (custom)" : ""}');
+    print(
+        '  Instrument:  ${config.instrument}${config.isCustom ? " (custom)" : ""}');
     if (config.tuningNotes != null) {
       print('  Tuning:      ${config.tuningNotes}');
     } else if (config.tuningName != null) {
@@ -574,7 +592,8 @@ class CliRunner {
         print('  Frets:       ${config.frets!.join(", ")}');
       }
     }
-    print('  Capo:        ${config.capo == 0 ? "none" : "fret ${config.capo}"}');
+    print(
+        '  Capo:        ${config.capo == 0 ? "none" : "fret ${config.capo}"}');
     print('  Diagrams:    ${config.diagramOrientation.name}');
     print('');
     try {
@@ -668,7 +687,8 @@ class CliRunner {
       if (i == 0) {
         print('    ${note.name.padRight(3)} = Root');
       } else {
-        print('    ${note.name.padRight(3)} = ${interval.friendlyName} (${interval.shortName})');
+        print(
+            '    ${note.name.padRight(3)} = ${interval.friendlyName} (${interval.shortName})');
       }
     }
     print('');
@@ -717,10 +737,12 @@ class CliRunner {
     final only1 = set1.difference(set2);
     final only2 = set2.difference(set1);
     if (only1.isNotEmpty) {
-      print('  Only in ${chord1.symbol}: ${only1.map((pc) => pc.name).join(", ")}');
+      print(
+          '  Only in ${chord1.symbol}: ${only1.map((pc) => pc.name).join(", ")}');
     }
     if (only2.isNotEmpty) {
-      print('  Only in ${chord2.symbol}: ${only2.map((pc) => pc.name).join(", ")}');
+      print(
+          '  Only in ${chord2.symbol}: ${only2.map((pc) => pc.name).join(", ")}');
     }
     print('');
 
@@ -740,7 +762,8 @@ class CliRunner {
     print('  -h, --help    Show this help');
     print('');
     print('Examples:');
-    print('  music_theory chord Am        Show A minor chord notes and formula');
+    print(
+        '  music_theory chord Am        Show A minor chord notes and formula');
     print('  music_theory chord Gmaj7     Show G major 7th chord');
     print('  music_theory chord C Am      Compare C major and A minor');
     print('  music_theory chord F#m Bm    Compare F# minor and B minor');
@@ -823,7 +846,8 @@ class CliRunner {
       print('  No voicings found for ${chord.symbol} on ${instrument.name}');
       print('');
       if (levelStr == 'beginner') {
-        print('  Try --level intermediate or --level advanced for more options.');
+        print(
+            '  Try --level intermediate or --level advanced for more options.');
       }
       return 0;
     }
@@ -833,7 +857,8 @@ class CliRunner {
 
     print('');
     print('  ${chord.name} (${chord.symbol}) on ${instrument.name}');
-    print('  Found ${voicings.length} voicing${voicings.length == 1 ? "" : "s"}, showing ${displayed.length}:');
+    print(
+        '  Found ${voicings.length} voicing${voicings.length == 1 ? "" : "s"}, showing ${displayed.length}:');
     print('');
 
     if (compact) {
@@ -842,7 +867,8 @@ class CliRunner {
         final v = displayed[i];
         final notes = v.pitchClassesOn(instrument).map((p) => p.name).join('-');
         final diffLabel = _difficultyLabel(v.difficulty);
-        print('  ${i + 1}. ${v.toCompactString().padRight(10)} $notes ($diffLabel)');
+        print(
+            '  ${i + 1}. ${v.toCompactString().padRight(10)} $notes ($diffLabel)');
       }
     } else {
       // Fretboard diagram format
@@ -876,17 +902,21 @@ class CliRunner {
     print('  chord     A chord name like C, Am, G7, Fmaj7');
     print('');
     print('Options:');
-    print('  -l, --level <level>        Filter by difficulty: beginner, intermediate, advanced');
+    print(
+        '  -l, --level <level>        Filter by difficulty: beginner, intermediate, advanced');
     print('  -n, --limit <count>        Maximum voicings to show (default: 5)');
-    print('  -c, --compact              Show compact format instead of diagrams');
+    print(
+        '  -c, --compact              Show compact format instead of diagrams');
     print('  -o, --orientation <type>   Diagram style: vertical, horizontal');
     print('  -h, --help                 Show this help');
     print('');
     print('Examples:');
-    print('  music_theory voicings Am               Show Am voicings on configured instrument');
+    print(
+        '  music_theory voicings Am               Show Am voicings on configured instrument');
     print('  music_theory voicings G --level beginner   Show easy G voicings');
     print('  music_theory voicings C7 --limit 10   Show up to 10 C7 voicings');
-    print('  music_theory voicings Dm --compact    Show voicings in compact format');
+    print(
+        '  music_theory voicings Dm --compact    Show voicings in compact format');
     print('');
     print('Note: Uses the instrument configured with "music_theory setup".');
     print('      Default is standard tuning guitar.');
@@ -972,7 +1002,8 @@ class CliRunner {
     } else if (semitones > 0) {
       print('  Transposed up $semitones semitone${semitones == 1 ? "" : "s"}:');
     } else {
-      print('  Transposed down ${-semitones} semitone${semitones == -1 ? "" : "s"}:');
+      print(
+          '  Transposed down ${-semitones} semitone${semitones == -1 ? "" : "s"}:');
     }
     print('');
 
@@ -992,7 +1023,8 @@ class CliRunner {
     print('');
   }
 
-  Future<int> _runCapoSuggestion(ChordProgression progression, int limit) async {
+  Future<int> _runCapoSuggestion(
+      ChordProgression progression, int limit) async {
     final config = await MusicTheoryConfig.load();
     final instrument = config.toInstrument();
 
@@ -1025,7 +1057,8 @@ class CliRunner {
       print('  Best option: Put capo on fret ${best.capoFret}');
       print('  Then play these shapes:');
       for (var i = 0; i < best.shapes.length; i++) {
-        print('    ${progression.chords[i].symbol} -> ${best.shapes[i].symbol}');
+        print(
+            '    ${progression.chords[i].symbol} -> ${best.shapes[i].symbol}');
       }
       print('');
     }
@@ -1050,11 +1083,14 @@ class CliRunner {
     print('  -h, --help            Show this help');
     print('');
     print('Examples:');
-    print('  music_theory transpose Am --up 2         Transpose Am up 2 semitones -> Bm');
-    print('  music_theory transpose "C Am F G" --up 5 Transpose progression to F Dm Bb C');
+    print(
+        '  music_theory transpose Am --up 2         Transpose Am up 2 semitones -> Bm');
+    print(
+        '  music_theory transpose "C Am F G" --up 5 Transpose progression to F Dm Bb C');
     print('  music_theory transpose F --down 1        Transpose F down to E');
     print('  music_theory transpose "F Bb C" -s       Suggest capo positions');
-    print('  music_theory transpose C# --spelling flats  Show as Db instead of C#');
+    print(
+        '  music_theory transpose C# --spelling flats  Show as Db instead of C#');
     print('');
     print('Common transpositions:');
     print('  1 semitone  = half step     (C -> C#)');
@@ -1115,8 +1151,10 @@ class CliRunner {
 
     // Show key detection result
     if (detection != null) {
-      final confidencePct = (detection.confidence * 100).clamp(0, 100).toStringAsFixed(0);
-      print('  Detected key: ${detection.key.symbol} ($confidencePct% confidence)');
+      final confidencePct =
+          (detection.confidence * 100).clamp(0, 100).toStringAsFixed(0);
+      print(
+          '  Detected key: ${detection.key.symbol} ($confidencePct% confidence)');
     } else if (key != null) {
       print('  Key: ${key.symbol}');
     } else {
@@ -1134,7 +1172,8 @@ class CliRunner {
           print('  Other possibilities:');
           for (var i = 1; i < alternatives.length; i++) {
             final alt = alternatives[i];
-            final confPct = (alt.confidence * 100).clamp(0, 100).toStringAsFixed(0);
+            final confPct =
+                (alt.confidence * 100).clamp(0, 100).toStringAsFixed(0);
             print('    ${alt.key.symbol} ($confPct%)');
           }
         }
@@ -1160,7 +1199,8 @@ class CliRunner {
         final chord = progression.chords[i];
         final numeral = numerals[i];
         final function = numeral.functionName;
-        print('    ${chord.symbol.padRight(8)} ${numeral.numeral.padRight(6)} $function');
+        print(
+            '    ${chord.symbol.padRight(8)} ${numeral.numeral.padRight(6)} $function');
       }
       print('');
 
@@ -1232,7 +1272,8 @@ class CliRunner {
     print('  -h, --help         Show this help');
     print('');
     print('Examples:');
-    print('  music_theory analyze "C Am F G"           Analyze pop progression');
+    print(
+        '  music_theory analyze "C Am F G"           Analyze pop progression');
     print('  music_theory analyze "Am G F E" --key Am  Analyze in A minor');
     print('  music_theory analyze "Dm7 G7 Cmaj7" -k    Show detected key only');
     print('');

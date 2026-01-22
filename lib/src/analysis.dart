@@ -69,7 +69,8 @@ class KeyDetector {
   }
 
   /// Detects the key from a chord progression object.
-  List<KeyDetectionResult> detectKeyFromProgression(ChordProgression progression) {
+  List<KeyDetectionResult> detectKeyFromProgression(
+      ChordProgression progression) {
     return detectKey(progression.chords);
   }
 
@@ -105,7 +106,9 @@ class KeyDetector {
     for (var i = 0; i < chords.length; i++) {
       final chord = chords[i];
       final isFirst = i == 0;
-      final chordScore = _scoreChordInKey(chord, key, diatonicRoots, diatonicChords, isFirst: isFirst);
+      final chordScore = _scoreChordInKey(
+          chord, key, diatonicRoots, diatonicChords,
+          isFirst: isFirst);
       totalScore += chordScore;
       if (chordScore > 0.5) matchCount++;
     }
@@ -325,7 +328,8 @@ class RomanNumeralAnalyzer {
   }
 
   /// Analyzes a chord progression in a key.
-  List<RomanNumeral> analyzeChordProgression(ChordProgression progression, Key key) {
+  List<RomanNumeral> analyzeChordProgression(
+      ChordProgression progression, Key key) {
     return analyzeProgression(progression.chords, key);
   }
 
@@ -417,14 +421,16 @@ class RomanNumeralAnalyzer {
     }
 
     // Add quality suffixes
-    final suffix = _getQualitySuffix(chord.type, isExpectedMajor, isActualMajor);
+    final suffix =
+        _getQualitySuffix(chord.type, isExpectedMajor, isActualMajor);
     numeral += suffix;
 
     return numeral;
   }
 
   /// Gets the suffix for chord quality.
-  String _getQualitySuffix(ChordType type, bool expectedMajor, bool actualMajor) {
+  String _getQualitySuffix(
+      ChordType type, bool expectedMajor, bool actualMajor) {
     return switch (type) {
       ChordType.major => '',
       ChordType.minor => '',
@@ -495,8 +501,30 @@ class ProgressionPatterns {
     '50s progression (I-vi-IV-V)': ['I', 'vi', 'IV', 'V'],
     'Pop progression (I-V-vi-IV)': ['I', 'V', 'vi', 'IV'],
     'Axis progression (vi-IV-I-V)': ['vi', 'IV', 'I', 'V'],
-    'Pachelbel progression (I-V-vi-iii-IV-I-IV-V)': ['I', 'V', 'vi', 'iii', 'IV', 'I', 'IV', 'V'],
-    '12-bar blues': ['I', 'I', 'I', 'I', 'IV', 'IV', 'I', 'I', 'V', 'IV', 'I', 'V'],
+    'Pachelbel progression (I-V-vi-iii-IV-I-IV-V)': [
+      'I',
+      'V',
+      'vi',
+      'iii',
+      'IV',
+      'I',
+      'IV',
+      'V'
+    ],
+    '12-bar blues': [
+      'I',
+      'I',
+      'I',
+      'I',
+      'IV',
+      'IV',
+      'I',
+      'I',
+      'V',
+      'IV',
+      'I',
+      'V'
+    ],
     'ii-V-I (jazz)': ['ii', 'V', 'I'],
     'I-IV-V (three chord)': ['I', 'IV', 'V'],
     'I-V (two chord)': ['I', 'V'],
@@ -599,12 +627,14 @@ class ProgressionAnalyzer {
     // Detect key
     final keyResults = const KeyDetector().detectTopKeys(chords);
     final bestKey = keyResults.isNotEmpty ? keyResults.first : null;
-    final alternatives = keyResults.length > 1 ? keyResults.sublist(1) : <KeyDetectionResult>[];
+    final alternatives =
+        keyResults.length > 1 ? keyResults.sublist(1) : <KeyDetectionResult>[];
 
     // Analyze Roman numerals in the best key
     List<RomanNumeral> numerals = [];
     if (bestKey != null) {
-      numerals = const RomanNumeralAnalyzer().analyzeProgression(chords, bestKey.key);
+      numerals =
+          const RomanNumeralAnalyzer().analyzeProgression(chords, bestKey.key);
     }
 
     // Recognize patterns

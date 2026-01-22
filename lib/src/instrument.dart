@@ -26,7 +26,8 @@ class StringConfig {
   factory StringConfig.parse(String note, {int fretCount = 22}) {
     final match = RegExp(r'^([A-Ga-g][#b]?)(\d+)$').firstMatch(note);
     if (match == null) {
-      throw FormatException('Invalid note format: "$note". Expected "E2", "G#3", etc.');
+      throw FormatException(
+          'Invalid note format: "$note". Expected "E2", "G#3", etc.');
     }
 
     final pitchClass = PitchClass.parse(match.group(1)!);
@@ -149,7 +150,8 @@ class Instrument {
   /// The sounding note accounts for both the string's open note and the capo.
   PitchClass soundingNoteAt(int stringIndex, int fret) {
     if (stringIndex < 0 || stringIndex >= strings.length) {
-      throw RangeError('String index $stringIndex out of range [0, ${strings.length - 1}]');
+      throw RangeError(
+          'String index $stringIndex out of range [0, ${strings.length - 1}]');
     }
     if (fret < 0 || fret > playableFrets) {
       throw RangeError('Fret $fret out of range [0, $playableFrets]');

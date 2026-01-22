@@ -97,7 +97,8 @@ void main() {
           Voicing.parse('X02210'),
           Voicing.parse('022100'),
         ];
-        final result = diagram.renderMultiple(voicings, chordNames: ['Am', 'E']);
+        final result =
+            diagram.renderMultiple(voicings, chordNames: ['Am', 'E']);
 
         expect(result, contains('Am'));
         expect(result, contains('E'));

@@ -97,7 +97,8 @@ void main() {
 
       test('sorts suggestions by difficulty', () {
         final suggester = CapoSuggester(guitar);
-        final suggestions = suggester.suggest([Chord.parse('F'), Chord.parse('Bb')]);
+        final suggestions =
+            suggester.suggest([Chord.parse('F'), Chord.parse('Bb')]);
 
         // Should be sorted by difficulty
         for (var i = 1; i < suggestions.length; i++) {

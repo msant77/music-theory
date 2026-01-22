@@ -245,7 +245,8 @@ void main() {
       });
 
       test('returns default if file does not exist', () async {
-        final loaded = await MusicTheoryConfig.loadFrom('${tempDir.path}/nonexistent.json');
+        final loaded = await MusicTheoryConfig.loadFrom(
+            '${tempDir.path}/nonexistent.json');
         expect(loaded, equals(MusicTheoryConfig.defaultConfig));
       });
 

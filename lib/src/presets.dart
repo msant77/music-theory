@@ -162,7 +162,8 @@ class _GuitarTunings {
   final dadgad = Tuning.parse('DADGAD', 'D2 A2 D3 G3 A3 D4');
 
   /// Half step down: Eb Ab Db Gb Bb Eb
-  final halfStepDown = Tuning.parse('Half Step Down', 'Eb2 Ab2 Db3 Gb3 Bb3 Eb4');
+  final halfStepDown =
+      Tuning.parse('Half Step Down', 'Eb2 Ab2 Db3 Gb3 Bb3 Eb4');
 
   /// Whole step down: D G C F A D
   final wholeStepDown = Tuning.parse('Whole Step Down', 'D2 G2 C3 F3 A3 D4');

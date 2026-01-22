@@ -180,7 +180,9 @@ class FretboardDiagram {
     buffer.writeln();
 
     // String rows (from high to low in display)
-    for (var displayRow = instrument.stringCount - 1; displayRow >= 0; displayRow--) {
+    for (var displayRow = instrument.stringCount - 1;
+        displayRow >= 0;
+        displayRow--) {
       final pos = voicing.positions[displayRow];
       final stringName = stringNames[displayRow].padLeft(2);
 
@@ -233,12 +235,14 @@ class FretboardDiagram {
 
     final diagrams = <List<String>>[];
     for (var i = 0; i < voicings.length; i++) {
-      final name = chordNames != null && i < chordNames.length ? chordNames[i] : null;
+      final name =
+          chordNames != null && i < chordNames.length ? chordNames[i] : null;
       final diagram = render(voicings[i], chordName: name);
       diagrams.add(diagram.split('\n'));
     }
 
-    final maxLines = diagrams.map((d) => d.length).reduce((a, b) => a > b ? a : b);
+    final maxLines =
+        diagrams.map((d) => d.length).reduce((a, b) => a > b ? a : b);
 
     final buffer = StringBuffer();
     for (var line = 0; line < maxLines; line++) {
@@ -272,7 +276,8 @@ class FretboardDiagram {
 }
 
 /// Renders a simple text-based voicing (no diagram).
-String renderVoicingText(Voicing voicing, Instrument instrument, {String? chordName}) {
+String renderVoicingText(Voicing voicing, Instrument instrument,
+    {String? chordName}) {
   final buffer = StringBuffer();
 
   if (chordName != null) {

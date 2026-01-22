@@ -63,7 +63,8 @@ class Note implements Comparable<Note> {
     int octaveStart = -1;
     for (var i = 1; i < trimmed.length; i++) {
       final char = trimmed[i];
-      if (char == '-' || (char.codeUnitAt(0) >= 48 && char.codeUnitAt(0) <= 57)) {
+      if (char == '-' ||
+          (char.codeUnitAt(0) >= 48 && char.codeUnitAt(0) <= 57)) {
         // Found minus sign or digit
         if (char != '#' && char != 'b') {
           octaveStart = i;
@@ -111,7 +112,8 @@ class Note implements Comparable<Note> {
   Note transpose(int semitones) {
     final newMidi = midiNumber + semitones;
     if (newMidi < 0 || newMidi > 127) {
-      throw RangeError('Transposition results in out-of-range MIDI note: $newMidi');
+      throw RangeError(
+          'Transposition results in out-of-range MIDI note: $newMidi');
     }
     return Note.fromMidi(newMidi);
   }
