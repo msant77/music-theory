@@ -192,16 +192,16 @@ This file tracks development tasks before they become GitHub issues.
 
 ## Phase 4: Transposition
 
-### [P4] Implement transposition functions `[GH: #10]`
-- **Status:** Planned
+### ~~[P4] Implement transposition functions~~ `[GH: #10]`
+- **Status:** Done
 - **Labels:** `phase-4`, `feature`
 - **Description:** Shift chords up or down by semitones
 - **Acceptance Criteria:**
-  - [ ] Transpose single chord by semitones
-  - [ ] Transpose chord progression
-  - [ ] Handle enharmonic spelling (prefer sharps or flats)
-  - [ ] Key-aware transposition (stay in key signature)
-  - [ ] Unit tests for edge cases (wrap-around, double sharps)
+  - [x] Transpose single chord by semitones
+  - [x] Transpose chord progression (`ChordProgression` class)
+  - [x] Handle enharmonic spelling (prefer sharps or flats via `SpellingPreference`)
+  - [x] Key-aware transposition (`Key` class with scale, diatonic chords, relative/parallel keys)
+  - [x] Unit tests for edge cases (wrap-around, double sharps) - 86 tests
 
 ### [P4] Implement capo suggestion algorithm `[GH: #11]`
 - **Status:** Planned

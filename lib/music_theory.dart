@@ -56,3 +56,4 @@ export 'src/presets.dart';
 export 'src/voicing.dart';
 export 'src/voicing_calculator.dart';
 export 'src/fretboard_diagram.dart';
+export 'src/transposition.dart';
