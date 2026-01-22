@@ -124,6 +124,13 @@ class CliRunner {
         abbr: 'c',
         negatable: false,
         help: 'Show compact format instead of fretboard diagrams',
+      )
+      ..addOption(
+        'orientation',
+        abbr: 'o',
+        help: 'Diagram orientation: vertical, horizontal (overrides config)',
+        valueHelp: 'type',
+        allowed: ['vertical', 'horizontal'],
       );
   }
 
@@ -187,6 +194,13 @@ class CliRunner {
         abbr: 'l',
         negatable: false,
         help: 'List available instruments and tunings.',
+      )
+      ..addOption(
+        'orientation',
+        abbr: 'o',
+        help: 'Diagram orientation: vertical (default) or horizontal',
+        valueHelp: 'type',
+        allowed: ['vertical', 'horizontal'],
       );
   }
 
@@ -225,7 +239,8 @@ class CliRunner {
         args['instrument'] != null ||
         args['tuning'] != null ||
         args['frets'] != null ||
-        args['capo'] != null;
+        args['capo'] != null ||
+        args['orientation'] != null;
 
     if (!hasChanges) {
       _printSetupHelp();
@@ -283,12 +298,22 @@ class CliRunner {
       return 1;
     }
 
+    // Parse orientation
+    DiagramOrientation orientation = DiagramOrientation.vertical;
+    if (args['orientation'] != null) {
+      final orientationStr = args['orientation'] as String;
+      orientation = orientationStr == 'horizontal'
+          ? DiagramOrientation.horizontal
+          : DiagramOrientation.vertical;
+    }
+
     final config = MusicTheoryConfig(
       instrument: name,
       tuningNotes: normalizedTuning,
       capo: capo,
       isCustom: true,
       frets: frets,
+      diagramOrientation: orientation,
     );
 
     // Validate by building the instrument
@@ -379,6 +404,15 @@ class CliRunner {
       config = config.copyWith(capo: capo);
     }
 
+    // Apply orientation change
+    if (args['orientation'] != null) {
+      final orientationStr = args['orientation'] as String;
+      final orientation = orientationStr == 'horizontal'
+          ? DiagramOrientation.horizontal
+          : DiagramOrientation.vertical;
+      config = config.copyWith(diagramOrientation: orientation);
+    }
+
     // Validate the final config
     try {
       config.toInstrument();
@@ -426,6 +460,9 @@ class CliRunner {
     print('  -t, --tuning <notes>       Tuning: "BEADGBE" or "B1 E2 A2 D3 G3 B3 E4"');
     print('  -f, --frets <count>        Frets: "22" or "22,22,22,22,5" (per-string)');
     print('');
+    print('Display:');
+    print('  -o, --orientation <type>   Diagram style: vertical (default), horizontal');
+    print('');
     print('Other:');
     print('  -s, --show                 Show current configuration');
     print('      --reset                Reset to default (guitar, standard, no capo)');
@@ -459,6 +496,7 @@ class CliRunner {
       }
     }
     print('  Capo:        ${config.capo == 0 ? "none" : "fret ${config.capo}"}');
+    print('  Diagrams:    ${config.diagramOrientation.name}');
     print('');
     try {
       final instrument = config.toInstrument();
@@ -673,8 +711,17 @@ class CliRunner {
     final levelStr = args['level'] as String?;
     final limitStr = args['limit'] as String;
     final compact = args['compact'] as bool;
+    final orientationStr = args['orientation'] as String?;
 
     final limit = int.tryParse(limitStr) ?? 5;
+
+    // Determine diagram orientation (command line overrides config)
+    DiagramOrientation orientation = config.diagramOrientation;
+    if (orientationStr != null) {
+      orientation = orientationStr == 'horizontal'
+          ? DiagramOrientation.horizontal
+          : DiagramOrientation.vertical;
+    }
 
     // Determine calculator options based on level
     VoicingCalculatorOptions options;
@@ -720,7 +767,7 @@ class CliRunner {
       }
     } else {
       // Fretboard diagram format
-      final diagram = FretboardDiagram(instrument);
+      final diagram = FretboardDiagram(instrument, orientation: orientation);
       for (var i = 0; i < displayed.length; i++) {
         final v = displayed[i];
         final diffLabel = _difficultyLabel(v.difficulty);
@@ -750,10 +797,11 @@ class CliRunner {
     print('  chord     A chord name like C, Am, G7, Fmaj7');
     print('');
     print('Options:');
-    print('  -l, --level <level>   Filter by difficulty: beginner, intermediate, advanced');
-    print('  -n, --limit <count>   Maximum voicings to show (default: 5)');
-    print('  -c, --compact         Show compact format instead of diagrams');
-    print('  -h, --help            Show this help');
+    print('  -l, --level <level>        Filter by difficulty: beginner, intermediate, advanced');
+    print('  -n, --limit <count>        Maximum voicings to show (default: 5)');
+    print('  -c, --compact              Show compact format instead of diagrams');
+    print('  -o, --orientation <type>   Diagram style: vertical, horizontal');
+    print('  -h, --help                 Show this help');
     print('');
     print('Examples:');
     print('  music_theory voicings Am               Show Am voicings on configured instrument');

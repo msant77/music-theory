@@ -54,9 +54,9 @@ void main() {
         final voicing = Voicing.parse('022100'); // E major
         final result = diagram.render(voicing);
 
-        // Nut is shown with ╓ and ╙
-        expect(result, contains('╓'));
-        expect(result, contains('╙'));
+        // Nut is shown with double-line box drawing characters (vertical: ╒═╤═╕)
+        expect(result, contains('╒'));
+        expect(result, contains('═'));
       });
 
       test('does not show nut for higher position chords', () {

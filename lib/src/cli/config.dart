@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import '../fretboard_diagram.dart';
 import '../instrument.dart';
 import '../pitch_class.dart';
 import '../presets.dart';
@@ -31,6 +32,9 @@ class MusicTheoryConfig {
   /// Null means use default (22 frets).
   final List<int>? frets;
 
+  /// Diagram orientation preference.
+  final DiagramOrientation diagramOrientation;
+
   /// Creates a configuration with the given settings.
   const MusicTheoryConfig({
     required this.instrument,
@@ -39,6 +43,7 @@ class MusicTheoryConfig {
     this.capo = 0,
     this.isCustom = false,
     this.frets,
+    this.diagramOrientation = DiagramOrientation.vertical,
   });
 
   /// Default configuration: guitar with standard tuning, no capo.
@@ -55,6 +60,11 @@ class MusicTheoryConfig {
       frets = fretsJson.cast<int>();
     }
 
+    final orientationStr = json['diagramOrientation'] as String?;
+    final orientation = orientationStr == 'horizontal'
+        ? DiagramOrientation.horizontal
+        : DiagramOrientation.vertical;
+
     return MusicTheoryConfig(
       instrument: json['instrument'] as String? ?? 'guitar',
       tuningName: json['tuningName'] as String?,
@@ -62,6 +72,7 @@ class MusicTheoryConfig {
       capo: json['capo'] as int? ?? 0,
       isCustom: json['isCustom'] as bool? ?? false,
       frets: frets,
+      diagramOrientation: orientation,
     );
   }
 
@@ -74,6 +85,8 @@ class MusicTheoryConfig {
       'capo': capo,
       if (isCustom) 'isCustom': true,
       if (frets != null) 'frets': frets,
+      if (diagramOrientation != DiagramOrientation.vertical)
+        'diagramOrientation': diagramOrientation.name,
     };
   }
 
@@ -204,6 +217,7 @@ class MusicTheoryConfig {
     int? capo,
     bool? isCustom,
     List<int>? frets,
+    DiagramOrientation? diagramOrientation,
     bool clearTuningName = false,
     bool clearTuningNotes = false,
     bool clearFrets = false,
@@ -215,6 +229,7 @@ class MusicTheoryConfig {
       capo: capo ?? this.capo,
       isCustom: isCustom ?? this.isCustom,
       frets: clearFrets ? null : (frets ?? this.frets),
+      diagramOrientation: diagramOrientation ?? this.diagramOrientation,
     );
   }
 
@@ -239,6 +254,9 @@ class MusicTheoryConfig {
     if (capo > 0) {
       buffer.write(' capo $capo');
     }
+    if (diagramOrientation != DiagramOrientation.vertical) {
+      buffer.write(' ${diagramOrientation.name} diagrams');
+    }
     return buffer.toString();
   }
 
@@ -250,7 +268,8 @@ class MusicTheoryConfig {
       other.tuningNotes == tuningNotes &&
       other.capo == capo &&
       other.isCustom == isCustom &&
-      _listEquals(other.frets, frets);
+      _listEquals(other.frets, frets) &&
+      other.diagramOrientation == diagramOrientation;
 
   @override
   int get hashCode => Object.hash(
@@ -260,6 +279,7 @@ class MusicTheoryConfig {
         capo,
         isCustom,
         frets != null ? Object.hashAll(frets!) : null,
+        diagramOrientation,
       );
 }
 

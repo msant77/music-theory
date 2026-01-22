@@ -176,6 +176,18 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Unit tests (36 tests)
 - **Notes:** Focus on fretted instruments (guitar, ukulele, etc.), not piano
 
+### ~~[P3] Add diagram orientation preference~~ `[GH: #17]`
+- **Status:** Done
+- **Labels:** `phase-3`, `cli`, `feature`
+- **Description:** Allow users to choose between vertical and horizontal fretboard diagrams
+- **Acceptance Criteria:**
+  - [x] Change default orientation to vertical (traditional chord diagram style)
+  - [x] Add `DiagramOrientation` enum (vertical, horizontal)
+  - [x] Add `diagramOrientation` field to `MusicTheoryConfig`
+  - [x] Add `--orientation` option to `setup` command to persist preference
+  - [x] Add `--orientation` option to `voicings` command to override config per-command
+  - [x] Update tests for new default orientation
+
 ---
 
 ## Phase 4: Transposition
