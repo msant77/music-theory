@@ -29,21 +29,33 @@ class ChordType {
   static const ChordType major = ChordType(
     name: 'major',
     symbol: '',
-    intervals: [Interval.perfectUnison, Interval.majorThird, Interval.perfectFifth],
+    intervals: [
+      Interval.perfectUnison,
+      Interval.majorThird,
+      Interval.perfectFifth
+    ],
   );
 
   /// Minor triad: R, m3, P5
   static const ChordType minor = ChordType(
     name: 'minor',
     symbol: 'm',
-    intervals: [Interval.perfectUnison, Interval.minorThird, Interval.perfectFifth],
+    intervals: [
+      Interval.perfectUnison,
+      Interval.minorThird,
+      Interval.perfectFifth
+    ],
   );
 
   /// Diminished triad: R, m3, d5
   static const ChordType diminished = ChordType(
     name: 'diminished',
     symbol: 'dim',
-    intervals: [Interval.perfectUnison, Interval.minorThird, Interval.diminishedFifth],
+    intervals: [
+      Interval.perfectUnison,
+      Interval.minorThird,
+      Interval.diminishedFifth
+    ],
   );
 
   /// Augmented triad: R, M3, A5
@@ -61,14 +73,22 @@ class ChordType {
   static const ChordType sus2 = ChordType(
     name: 'suspended 2nd',
     symbol: 'sus2',
-    intervals: [Interval.perfectUnison, Interval.majorSecond, Interval.perfectFifth],
+    intervals: [
+      Interval.perfectUnison,
+      Interval.majorSecond,
+      Interval.perfectFifth
+    ],
   );
 
   /// Suspended 4th: R, P4, P5
   static const ChordType sus4 = ChordType(
     name: 'suspended 4th',
     symbol: 'sus4',
-    intervals: [Interval.perfectUnison, Interval.perfectFourth, Interval.perfectFifth],
+    intervals: [
+      Interval.perfectUnison,
+      Interval.perfectFourth,
+      Interval.perfectFifth
+    ],
   );
 
   // ==================== Seventh Chords ====================
@@ -398,7 +418,9 @@ class Chord {
 
   /// The pitch classes in this chord.
   List<PitchClass> get pitchClasses {
-    return type.intervals.map((interval) => root.transpose(interval.semitones)).toList();
+    return type.intervals
+        .map((interval) => root.transpose(interval.semitones))
+        .toList();
   }
 
   /// The notes in this chord, starting from the given octave.
@@ -467,8 +489,8 @@ ChordType? _parseChordType(String suffix) {
     // Minor: m, min, Min, MIN, -
     'm' || 'min' || 'Min' || 'MIN' || '-' => ChordType.minor,
 
-    // Diminished: dim, Dim, DIM, °
-    'dim' || 'Dim' || 'DIM' || '°' => ChordType.diminished,
+    // Diminished: dim, Dim, DIM, ° (degree), ˚ (ring above), º (ordinal)
+    'dim' || 'Dim' || 'DIM' || '°' || '˚' || 'º' => ChordType.diminished,
 
     // Augmented: aug, Aug, AUG, +
     'aug' || 'Aug' || 'AUG' || '+' => ChordType.augmented,
@@ -489,10 +511,15 @@ ChordType? _parseChordType(String suffix) {
     'm7' || 'min7' || 'Min7' || 'MIN7' => ChordType.minor7,
 
     // Minor major 7th: mM7, mMaj7, mmaj7, minMaj7, minM7
-    'mM7' || 'mMaj7' || 'mmaj7' || 'minMaj7' || 'minM7' => ChordType.minorMajor7,
+    'mM7' ||
+    'mMaj7' ||
+    'mmaj7' ||
+    'minMaj7' ||
+    'minM7' =>
+      ChordType.minorMajor7,
 
-    // Diminished 7th: dim7, Dim7, DIM7, °7
-    'dim7' || 'Dim7' || 'DIM7' || '°7' => ChordType.diminished7,
+    // Diminished 7th: dim7, Dim7, DIM7, °7, ˚7, º7
+    'dim7' || 'Dim7' || 'DIM7' || '°7' || '˚7' || 'º7' => ChordType.diminished7,
 
     // Half-diminished 7th: m7b5, min7b5, ø, ø7
     'm7b5' || 'min7b5' || 'ø' || 'ø7' => ChordType.halfDiminished7,
@@ -523,7 +550,6 @@ ChordType? _parseChordType(String suffix) {
 
     // Power chord
     '5' => ChordType.power,
-
     _ => null,
   };
 }
