@@ -321,8 +321,11 @@ class Chord {
   /// The type of chord (major, minor, etc.).
   final ChordType type;
 
+  /// The bass note for slash chords (e.g., G in "C/G"), or null for regular chords.
+  final PitchClass? bassNote;
+
   /// Creates a chord with the given root and type.
-  const Chord(this.root, this.type);
+  const Chord(this.root, this.type, {this.bassNote});
 
   /// Parses a chord from a string like "C", "Am", "G7", "Fmaj7", "Bb".
   ///
@@ -334,10 +337,11 @@ class Chord {
   /// - Augmented: Caug, C+
   /// - Suspended: Csus2, Csus4, Csus
   /// - Seventh: C7, Cmaj7, CM7, Cm7, Cmin7, Cdim7, C°7
-  /// - Half-diminished: Cm7b5, Cø, Cø7
+  /// - Half-diminished: Cm7b5, Cø, Cø7, Cm7(b5)
   /// - Extended: C9, Cmaj9, Cm9, Cadd9
   /// - Sixth: C6, Cm6
   /// - Power: C5
+  /// - Slash chords: C/G, Am/E, G/B
   ///
   /// Throws [FormatException] if the chord cannot be parsed.
   factory Chord.parse(String input) {
@@ -346,15 +350,33 @@ class Chord {
       throw const FormatException('Empty chord string');
     }
 
+    // Check for slash chord (bass note)
+    PitchClass? bassNote;
+    var chordPart = trimmed;
+
+    final slashIndex = trimmed.lastIndexOf('/');
+    if (slashIndex > 0) {
+      final bassStr = trimmed.substring(slashIndex + 1);
+      try {
+        bassNote = PitchClass.parse(bassStr);
+        chordPart = trimmed.substring(0, slashIndex);
+      } on FormatException {
+        // Not a valid bass note, treat as part of chord type
+      }
+    }
+
     // Parse root note
     var index = 1;
-    if (trimmed.length > 1 && (trimmed[1] == '#' || trimmed[1] == 'b')) {
+    if (chordPart.length > 1 && (chordPart[1] == '#' || chordPart[1] == 'b')) {
       index = 2;
     }
 
-    final rootStr = trimmed.substring(0, index);
+    final rootStr = chordPart.substring(0, index);
     final root = PitchClass.parse(rootStr);
-    final suffix = trimmed.substring(index);
+    var suffix = chordPart.substring(index);
+
+    // Handle parentheses alterations: convert Cm7(b5) to Cm7b5
+    suffix = suffix.replaceAll('(', '').replaceAll(')', '');
 
     // Parse chord type from suffix
     final type = _parseChordType(suffix);
@@ -362,7 +384,7 @@ class Chord {
       throw FormatException('Unknown chord type: "$suffix" in "$input"');
     }
 
-    return Chord(root, type);
+    return Chord(root, type, bassNote: bassNote);
   }
 
   /// Tries to parse a chord, returning null on failure.
@@ -393,11 +415,17 @@ class Chord {
     return notes;
   }
 
-  /// The chord symbol (e.g., "C", "Am", "G7").
-  String get symbol => '${root.name}${type.symbol}';
+  /// The chord symbol (e.g., "C", "Am", "G7", "C/G").
+  String get symbol {
+    final base = '${root.name}${type.symbol}';
+    return bassNote != null ? '$base/${bassNote!.name}' : base;
+  }
 
-  /// The full name of the chord (e.g., "C major", "A minor", "G dominant 7th").
-  String get name => '${root.name} ${type.name}';
+  /// The full name of the chord (e.g., "C major", "A minor", "C major over G").
+  String get name {
+    final base = '${root.name} ${type.name}';
+    return bassNote != null ? '$base over ${bassNote!.name}' : base;
+  }
 
   /// The intervals that make up this chord.
   List<Interval> get intervals => type.intervals;
@@ -407,15 +435,22 @@ class Chord {
 
   /// Transposes this chord by the given number of semitones.
   Chord transpose(int semitones) {
-    return Chord(root.transpose(semitones), type);
+    return Chord(
+      root.transpose(semitones),
+      type,
+      bassNote: bassNote?.transpose(semitones),
+    );
   }
 
   @override
   bool operator ==(Object other) =>
-      other is Chord && other.root == root && other.type == type;
+      other is Chord &&
+      other.root == root &&
+      other.type == type &&
+      other.bassNote == bassNote;
 
   @override
-  int get hashCode => Object.hash(root, type);
+  int get hashCode => Object.hash(root, type, bassNote);
 
   @override
   String toString() => symbol;
@@ -453,8 +488,8 @@ ChordType? _parseChordType(String suffix) {
     // Minor 7th: m7, min7, Min7, MIN7
     'm7' || 'min7' || 'Min7' || 'MIN7' => ChordType.minor7,
 
-    // Minor major 7th: mM7, mMaj7, minMaj7, minM7
-    'mM7' || 'mMaj7' || 'minMaj7' || 'minM7' => ChordType.minorMajor7,
+    // Minor major 7th: mM7, mMaj7, mmaj7, minMaj7, minM7
+    'mM7' || 'mMaj7' || 'mmaj7' || 'minMaj7' || 'minM7' => ChordType.minorMajor7,
 
     // Diminished 7th: dim7, Dim7, DIM7, °7
     'dim7' || 'Dim7' || 'DIM7' || '°7' => ChordType.diminished7,
