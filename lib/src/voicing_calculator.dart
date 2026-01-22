@@ -284,8 +284,13 @@ extension ChordVoicingExtension on Chord {
   }
 
   /// Finds the easiest voicings for this chord on the given instrument.
+  ///
+  /// Uses intermediate difficulty options to include common chord shapes
+  /// like C major (X32010) which are classified as intermediate.
   List<Voicing> easyVoicingsOn(Instrument instrument, {int limit = 5}) {
-    return VoicingCalculator(instrument, options: VoicingCalculatorOptions.beginner)
-        .findEasiestVoicings(this, limit: limit);
+    return VoicingCalculator(
+      instrument,
+      options: VoicingCalculatorOptions.intermediate,
+    ).findEasiestVoicings(this, limit: limit);
   }
 }
