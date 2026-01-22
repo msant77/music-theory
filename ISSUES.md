@@ -278,6 +278,23 @@ This file tracks development tasks before they become GitHub issues.
 
 ---
 
+## Bug Fixes
+
+### [BUG] Fix voicing validation to require all chord tones `[GH: #21]`
+- **Status:** Done
+- **Labels:** `bug`, `phase-3`
+- **Description:** Voicings were being returned that didn't include all chord tones. For example, Bm7b5 was showing X2020X which is missing the b5 (F).
+- **Root Cause:** The `playsChord` method and `_isValidVoicing` only checked that played notes were chord tones, not that ALL chord tones were present.
+- **Fix:** Added chord tone completeness check to both `voicing.dart` and `voicing_calculator.dart`
+- **Acceptance Criteria:**
+  - [x] `playsChord` returns false when voicing is missing chord tones
+  - [x] `_isValidVoicing` filters out incomplete voicings
+  - [x] Bm7b5 correctly returns X2323X (with all 4 notes: B, F, A, D)
+  - [x] E7 correctly returns 020100 as easiest voicing
+  - [x] All existing tests pass
+
+---
+
 ## Label Definitions
 
 | Label | Description |

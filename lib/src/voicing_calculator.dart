@@ -219,14 +219,23 @@ class VoicingCalculator {
 
     // All played notes must be chord tones
     final chordTones = chord.pitchClasses.toSet();
+    final uniquePitches = playedPitches.toSet();
+
     for (final pitch in playedPitches) {
       if (!chordTones.contains(pitch)) {
         return false;
       }
     }
 
+    // All chord tones must be present in the voicing
+    // This ensures Bm7b5 voicings include the b5, etc.
+    for (final chordTone in chordTones) {
+      if (!uniquePitches.contains(chordTone)) {
+        return false;
+      }
+    }
+
     // Must have at least root and one other note (typically the 3rd)
-    final uniquePitches = playedPitches.toSet();
     if (uniquePitches.length < 2) {
       return false;
     }

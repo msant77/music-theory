@@ -309,16 +309,26 @@ class Voicing {
   }
 
   /// Checks if this voicing plays the given chord on the instrument.
+  ///
+  /// Returns true if:
+  /// - All played notes are chord tones (no wrong notes)
+  /// - All chord tones are present in the voicing
+  /// - The root note is present
   bool playsChord(Chord chord, Instrument instrument) {
     final voicingPitches = pitchClassesOn(instrument).toSet();
     final chordPitches = chord.pitchClasses.toSet();
 
-    // All played notes must be in the chord
+    // All played notes must be in the chord (no wrong notes)
     if (!voicingPitches.every(chordPitches.contains)) {
       return false;
     }
 
-    // Must have at least the root
+    // All chord notes must be present in the voicing
+    if (!chordPitches.every(voicingPitches.contains)) {
+      return false;
+    }
+
+    // Must have the root
     if (!voicingPitches.contains(chord.root)) {
       return false;
     }
