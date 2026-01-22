@@ -203,15 +203,15 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Key-aware transposition (`Key` class with scale, diatonic chords, relative/parallel keys)
   - [x] Unit tests for edge cases (wrap-around, double sharps) - 86 tests
 
-### [P4] Implement capo suggestion algorithm `[GH: #11]`
-- **Status:** Planned
+### ~~[P4] Implement capo suggestion algorithm~~ `[GH: #11]`
+- **Status:** Done
 - **Labels:** `phase-4`, `feature`
 - **Description:** Suggest capo positions for easier chord shapes
 - **Acceptance Criteria:**
-  - [ ] Given chords, suggest capo + simpler shapes
-  - [ ] Rank suggestions by chord difficulty
-  - [ ] Consider common open chord shapes
-  - [ ] Unit tests with known examples (F → capo 1 + E shape)
+  - [x] Given chords, suggest capo + simpler shapes (`CapoSuggester` class)
+  - [x] Rank suggestions by chord difficulty (sorted by difficulty score)
+  - [x] Consider common open chord shapes (C, G, D, E, A, Am, Em, Dm)
+  - [x] Unit tests with known examples (F → capo 1 + E shape) - 31 tests
 
 ### [P4] Create `transpose` CLI command `[GH: #12]`
 - **Status:** Planned
