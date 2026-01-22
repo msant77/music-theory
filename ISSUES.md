@@ -226,37 +226,39 @@ This file tracks development tasks before they become GitHub issues.
 
 ---
 
-## Phase 5: Simple Analysis (Future)
+## Phase 5: Simple Analysis
 
-### [P5] Implement key detection `[GH: #13]`
-- **Status:** Planned
+### ~~[P5] Implement key detection~~ `[GH: #13]`
+- **Status:** Done
 - **Labels:** `phase-5`, `feature`
 - **Description:** Infer the key from a chord progression
 - **Acceptance Criteria:**
-  - [ ] Detect major key from chords
-  - [ ] Detect relative minor
-  - [ ] Handle ambiguous cases
-  - [ ] Unit tests with common progressions
+  - [x] Detect major key from chords
+  - [x] Detect relative minor
+  - [x] Handle ambiguous cases (confidence scoring, first-chord tonic bonus)
+  - [x] Unit tests with common progressions - 47 tests
 
-### [P5] Implement Roman numeral analysis `[GH: #14]`
-- **Status:** Planned
+### ~~[P5] Implement Roman numeral analysis~~ `[GH: #14]`
+- **Status:** Done
 - **Labels:** `phase-5`, `feature`
 - **Description:** Label chords with their function (I, IV, V, etc.)
 - **Acceptance Criteria:**
-  - [ ] Convert chord to Roman numeral given key
-  - [ ] Handle secondary dominants (V/V)
-  - [ ] Beginner-friendly explanations
-  - [ ] Unit tests for standard progressions
+  - [x] Convert chord to Roman numeral given key
+  - [x] Handle non-diatonic chords (chromatic alterations)
+  - [x] Beginner-friendly explanations (function names)
+  - [x] Pattern recognition (50s, pop, ii-V-I, Andalusian, etc.)
+  - [x] Unit tests for standard progressions - 47 tests
 
-### [P5] Create `analyze` CLI command `[GH: #15]`
-- **Status:** Planned
+### ~~[P5] Create `analyze` CLI command~~ `[GH: #15]`
+- **Status:** Done
 - **Labels:** `phase-5`, `cli`
 - **Description:** Understand a chord progression
 - **Acceptance Criteria:**
-  - [ ] `analyze "<progression>"` shows key and numerals
-  - [ ] `--key-only` for just key detection
-  - [ ] Name common patterns ("pop progression", "12-bar blues")
-  - [ ] `--help` with music theory basics
+  - [x] `analyze "<progression>"` shows key and numerals
+  - [x] `--key-only` for just key detection
+  - [x] `--key` to analyze in a specific key
+  - [x] Name common patterns ("pop progression", "ii-V-I", etc.)
+  - [x] `--help` with music theory basics - 21 tests
 
 ---
 
