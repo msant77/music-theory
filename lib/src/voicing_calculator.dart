@@ -40,6 +40,12 @@ class VoicingCalculatorOptions {
   /// Default is 2.
   final int maxMutedStrings;
 
+  /// Maximum number of fingers required to play the voicing.
+  ///
+  /// Default is 4 (standard for guitar playing).
+  /// Accounts for barres (multiple strings at lowest fret = 1 finger).
+  final int maxFingers;
+
   /// Filter by difficulty level.
   final VoicingDifficulty? maxDifficulty;
 
@@ -52,6 +58,7 @@ class VoicingCalculatorOptions {
     this.allowInteriorMutes = true,
     this.minStringsPlayed = 3,
     this.maxMutedStrings = 2,
+    this.maxFingers = 4,
     this.maxDifficulty,
   });
 
@@ -89,7 +96,8 @@ class VoicingCalculator {
   final VoicingCalculatorOptions options;
 
   /// Creates a voicing calculator for the given instrument.
-  VoicingCalculator(this.instrument, {this.options = const VoicingCalculatorOptions()});
+  VoicingCalculator(this.instrument,
+      {this.options = const VoicingCalculatorOptions()});
 
   /// Finds all valid voicings for the given chord.
   ///
@@ -118,19 +126,59 @@ class VoicingCalculator {
       },
     );
 
-    // Sort by difficulty
-    voicings.sort((a, b) => a.difficultyScore.compareTo(b.difficultyScore));
+    // Deduplicate voicings with the same fretted shape
+    // Keep the voicing with most played strings for each unique shape
+    final deduped = _deduplicateVoicings(voicings);
 
-    return voicings;
+    // Sort by difficulty
+    deduped.sort((a, b) => a.difficultyScore.compareTo(b.difficultyScore));
+
+    return deduped;
+  }
+
+  /// Deduplicates voicings that have the same "shape" (fretted positions).
+  ///
+  /// For voicings with identical fretted strings, keeps only the one that
+  /// plays the most strings (fullest voicing).
+  List<Voicing> _deduplicateVoicings(List<Voicing> voicings) {
+    // Group by fretted shape (string index -> fret number for fretted strings only)
+    final shapeMap = <String, Voicing>{};
+
+    for (final voicing in voicings) {
+      final shape = _getFrettedShape(voicing);
+
+      if (!shapeMap.containsKey(shape) ||
+          voicing.playedStringCount > shapeMap[shape]!.playedStringCount) {
+        shapeMap[shape] = voicing;
+      }
+    }
+
+    return shapeMap.values.toList();
+  }
+
+  /// Gets a string key representing the fretted positions of a voicing.
+  ///
+  /// Only includes strings that are fretted (not open or muted).
+  String _getFrettedShape(Voicing voicing) {
+    final parts = <String>[];
+    for (var i = 0; i < voicing.positions.length; i++) {
+      final pos = voicing.positions[i];
+      if (pos.isFretted) {
+        parts.add('$i:${pos.fret}');
+      }
+    }
+    return parts.join(',');
   }
 
   /// Finds fret positions on a string that produce any of the given pitch classes.
-  List<int?> _findFretOptionsForString(int stringIndex, Set<PitchClass> targets) {
+  List<int?> _findFretOptionsForString(
+      int stringIndex, Set<PitchClass> targets) {
     final options = <int?>[null]; // null = muted is always an option
 
     final maxFret = options.isEmpty
         ? this.options.maxFret
-        : this.options.maxFret.clamp(0, instrument.strings[stringIndex].fretCount - instrument.capo);
+        : this.options.maxFret.clamp(
+            0, instrument.strings[stringIndex].fretCount - instrument.capo);
 
     for (var fret = this.options.minFret; fret <= maxFret; fret++) {
       final pitch = instrument.soundingNoteAt(stringIndex, fret);
@@ -156,7 +204,8 @@ class VoicingCalculator {
 
     for (final fret in fretOptions[stringIndex]) {
       current.add(fret);
-      _generateCombinations(fretOptions, stringIndex + 1, current, onCombination);
+      _generateCombinations(
+          fretOptions, stringIndex + 1, current, onCombination);
       current.removeLast();
     }
   }
@@ -178,6 +227,11 @@ class VoicingCalculator {
       return false;
     }
 
+    // Check maximum fingers required
+    if (voicing.fingersRequired > options.maxFingers) {
+      return false;
+    }
+
     // Check interior mutes
     if (!options.allowInteriorMutes && _hasInteriorMutes(voicing)) {
       return false;
@@ -185,7 +239,8 @@ class VoicingCalculator {
 
     // Check difficulty
     if (options.maxDifficulty != null) {
-      final difficultyIndex = VoicingDifficulty.values.indexOf(voicing.difficulty);
+      final difficultyIndex =
+          VoicingDifficulty.values.indexOf(voicing.difficulty);
       final maxIndex = VoicingDifficulty.values.indexOf(options.maxDifficulty!);
       if (difficultyIndex > maxIndex) {
         return false;
@@ -208,7 +263,8 @@ class VoicingCalculator {
       // Find the first played string (lowest pitch)
       for (var i = 0; i < voicing.positions.length; i++) {
         if (voicing.positions[i].isPlayed) {
-          final bassPitch = instrument.soundingNoteAt(i, voicing.positions[i].fret!);
+          final bassPitch =
+              instrument.soundingNoteAt(i, voicing.positions[i].fret!);
           if (bassPitch != root) {
             return false;
           }

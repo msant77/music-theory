@@ -29,10 +29,14 @@ class StringPosition {
   const StringPosition({this.fret, this.finger});
 
   /// Creates a muted string position.
-  const StringPosition.muted() : fret = null, finger = null;
+  const StringPosition.muted()
+      : fret = null,
+        finger = null;
 
   /// Creates an open string position.
-  const StringPosition.open() : fret = 0, finger = null;
+  const StringPosition.open()
+      : fret = 0,
+        finger = null;
 
   /// Creates a fretted string position.
   const StringPosition.fretted(int fretNumber, {this.finger})
@@ -288,6 +292,67 @@ class Voicing {
     if (score <= 25) return VoicingDifficulty.beginner;
     if (score <= 50) return VoicingDifficulty.intermediate;
     return VoicingDifficulty.advanced;
+  }
+
+  /// Estimates the number of fingers required to play this voicing.
+  ///
+  /// Accounts for potential barres: if multiple strings at the lowest fret
+  /// could reasonably be barred together (no overriding frets in between),
+  /// they count as one finger.
+  ///
+  /// Returns the estimated finger count (1-6 for guitar).
+  int get fingersRequired {
+    // Group fretted positions by fret number
+    final fretPositions = <int, List<int>>{};
+    for (var i = 0; i < positions.length; i++) {
+      final pos = positions[i];
+      if (pos.isFretted) {
+        fretPositions.putIfAbsent(pos.fret!, () => []).add(i);
+      }
+    }
+
+    if (fretPositions.isEmpty) return 0;
+
+    // Find the lowest fret
+    final sortedFrets = fretPositions.keys.toList()..sort();
+    final lowestFret = sortedFrets.first;
+    final stringsAtLowest = fretPositions[lowestFret]!..sort();
+
+    var fingers = 0;
+
+    // Check if lowest fret could be a valid barre (2+ strings, no overrides)
+    var canBarre = stringsAtLowest.length >= 2;
+    if (canBarre) {
+      final fromString = stringsAtLowest.first;
+      final toStringIndex = stringsAtLowest.last;
+
+      // Check that no string in the barre range has a higher fret
+      for (var s = fromString; s <= toStringIndex; s++) {
+        final pos = positions[s];
+        if (pos.isFretted && pos.fret! > lowestFret) {
+          // A string in the barre range is fretted higher - not a valid barre
+          canBarre = false;
+          break;
+        }
+      }
+    }
+
+    if (canBarre) {
+      // Valid barre - counts as 1 finger
+      fingers = 1;
+    } else {
+      // No valid barre - each string at lowest fret needs its own finger
+      fingers = stringsAtLowest.length;
+    }
+
+    // Count remaining frets (each string at a higher fret = 1 finger)
+    for (var i = 1; i < sortedFrets.length; i++) {
+      final fret = sortedFrets[i];
+      final stringsAtFret = fretPositions[fret]!;
+      fingers += stringsAtFret.length;
+    }
+
+    return fingers;
   }
 
   /// Returns the pitch classes being played in this voicing on the given instrument.

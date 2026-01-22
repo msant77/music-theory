@@ -58,8 +58,8 @@ void main() {
 
         // Should include the standard X02210 voicing
         final standard = Voicing.parse('X02210');
-        final hasStandard = voicings.any((v) =>
-            v.toCompactString() == standard.toCompactString());
+        final hasStandard = voicings
+            .any((v) => v.toCompactString() == standard.toCompactString());
         expect(hasStandard, isTrue);
       });
 
@@ -88,8 +88,8 @@ void main() {
 
         // Should include standard 022100
         final standard = Voicing.parse('022100');
-        final hasStandard = voicings.any((v) =>
-            v.toCompactString() == standard.toCompactString());
+        final hasStandard = voicings
+            .any((v) => v.toCompactString() == standard.toCompactString());
         expect(hasStandard, isTrue);
       });
 
@@ -139,6 +139,27 @@ void main() {
         }
       });
 
+      test('respects maxFingers option', () {
+        // Bm7b5 is a good test case - has many potential voicings
+        final chord = Chord.parse('Bm7b5');
+        const options = VoicingCalculatorOptions(
+          maxFingers: 4,
+          maxDifficulty: VoicingDifficulty.intermediate,
+        );
+        final calc = VoicingCalculator(guitar, options: options);
+        final voicings = calc.findVoicings(chord);
+
+        // All voicings should require 4 or fewer fingers
+        for (final voicing in voicings) {
+          expect(
+            voicing.fingersRequired,
+            lessThanOrEqualTo(4),
+            reason: '${voicing.toCompactString()} requires '
+                '${voicing.fingersRequired} fingers',
+          );
+        }
+      });
+
       test('respects rootInBass option', () {
         final chord = Chord.parse('C');
         final calc = VoicingCalculator(guitar);
@@ -148,7 +169,8 @@ void main() {
           // Find bass note
           for (var i = 0; i < voicing.positions.length; i++) {
             if (voicing.positions[i].isPlayed) {
-              final bassPitch = guitar.soundingNoteAt(i, voicing.positions[i].fret!);
+              final bassPitch =
+                  guitar.soundingNoteAt(i, voicing.positions[i].fret!);
               expect(bassPitch, equals(PitchClass.c));
               break;
             }
@@ -255,8 +277,8 @@ void main() {
 
         // X32010 is the standard C shape
         final standard = Voicing.parse('X32010');
-        final found = voicings.any((v) =>
-            v.toCompactString() == standard.toCompactString());
+        final found = voicings
+            .any((v) => v.toCompactString() == standard.toCompactString());
         expect(found, isTrue, reason: 'Should include standard C shape X32010');
       });
 
@@ -267,8 +289,8 @@ void main() {
 
         // 320003 is a common G shape
         final standard = Voicing.parse('320003');
-        final found = voicings.any((v) =>
-            v.toCompactString() == standard.toCompactString());
+        final found = voicings
+            .any((v) => v.toCompactString() == standard.toCompactString());
         expect(found, isTrue, reason: 'Should include G shape 320003');
       });
 
@@ -279,8 +301,8 @@ void main() {
 
         // XX0232 is the standard D shape
         final standard = Voicing.parse('XX0232');
-        final found = voicings.any((v) =>
-            v.toCompactString() == standard.toCompactString());
+        final found = voicings
+            .any((v) => v.toCompactString() == standard.toCompactString());
         expect(found, isTrue, reason: 'Should include standard D shape XX0232');
       });
 
@@ -291,9 +313,10 @@ void main() {
 
         // 022000 is the standard Em shape
         final standard = Voicing.parse('022000');
-        final found = voicings.any((v) =>
-            v.toCompactString() == standard.toCompactString());
-        expect(found, isTrue, reason: 'Should include standard Em shape 022000');
+        final found = voicings
+            .any((v) => v.toCompactString() == standard.toCompactString());
+        expect(found, isTrue,
+            reason: 'Should include standard Em shape 022000');
       });
     });
   });

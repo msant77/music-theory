@@ -94,13 +94,17 @@ void main() {
 
     group('equality', () {
       test('equal positions are equal', () {
-        expect(const StringPosition(fret: 2), equals(const StringPosition(fret: 2)));
-        expect(const StringPosition.muted(), equals(const StringPosition.muted()));
+        expect(const StringPosition(fret: 2),
+            equals(const StringPosition(fret: 2)));
+        expect(
+            const StringPosition.muted(), equals(const StringPosition.muted()));
       });
 
       test('different positions are not equal', () {
-        expect(const StringPosition(fret: 2), isNot(equals(const StringPosition(fret: 3))));
-        expect(const StringPosition.muted(), isNot(equals(const StringPosition.open())));
+        expect(const StringPosition(fret: 2),
+            isNot(equals(const StringPosition(fret: 3))));
+        expect(const StringPosition.muted(),
+            isNot(equals(const StringPosition.open())));
       });
 
       test('positions with different fingers are not equal', () {
@@ -320,6 +324,52 @@ void main() {
       });
     });
 
+    group('fingersRequired', () {
+      test('returns 0 for all open/muted voicing', () {
+        final voicing = Voicing.fromFrets([null, 0, 0, 0, 0, 0]);
+        expect(voicing.fingersRequired, equals(0));
+      });
+
+      test('counts unique frets for simple voicing', () {
+        // Am: X02210 - frets 1 and 2 used, so 2 fingers at different frets
+        // Actually: 2,2,1 = frets 1 and 2 used
+        // lowest fret = 1 (1 string), frets above: 2 (2 strings)
+        // = 1 + 2 = 3 fingers
+        final am = Voicing.fromFrets([null, 0, 2, 2, 1, 0]);
+        expect(am.fingersRequired, equals(3));
+      });
+
+      test('treats multiple strings at lowest fret as potential barre', () {
+        // Voicing with 3 strings at fret 5, 1 string at fret 7
+        // = 1 finger (barre) + 1 finger = 2 fingers
+        final voicing = Voicing.fromFrets([5, 5, 5, null, 7, null]);
+        expect(voicing.fingersRequired, equals(2));
+      });
+
+      test('counts multiple strings at higher frets individually', () {
+        // Fret 2 on strings 0,1 (valid barre) + fret 3 on strings 2,3 = 1 + 2 = 3
+        final voicing = Voicing.fromFrets([2, 2, 3, 3, null, null]);
+        expect(voicing.fingersRequired, equals(3));
+      });
+
+      test('invalid barre when higher fret in range', () {
+        // X2323X = strings 1,3 at fret 2, strings 2,4 at fret 3
+        // Barre from string 1 to 3 is invalid because string 2 is at fret 3
+        // So: strings 1,3 at fret 2 = 2 fingers, strings 2,4 at fret 3 = 2 fingers = 4 total
+        final voicing = Voicing.fromFrets([null, 2, 3, 2, 3, null]);
+        expect(voicing.fingersRequired, equals(4));
+      });
+
+      test(
+          'voicing with 5 fretted strings at different frets requires 5 fingers',
+          () {
+        // X23231 = 5 fretted strings at frets 2,3,2,3,1
+        // lowest = 1 (1 string), 2 (2 strings), 3 (2 strings) = 1 + 2 + 2 = 5
+        final voicing = Voicing.fromFrets([null, 2, 3, 2, 3, 1]);
+        expect(voicing.fingersRequired, equals(5));
+      });
+    });
+
     group('pitchClassesOn', () {
       late Instrument guitar;
 
@@ -345,7 +395,8 @@ void main() {
         final c = Voicing.fromFrets([null, 3, 2, 0, 1, 0]);
         final pitches = c.pitchClassesOn(guitar);
 
-        expect(pitches.toSet(), containsAll([PitchClass.c, PitchClass.e, PitchClass.g]));
+        expect(pitches.toSet(),
+            containsAll([PitchClass.c, PitchClass.e, PitchClass.g]));
       });
 
       test('throws if voicing does not match instrument string count', () {
@@ -428,7 +479,8 @@ void main() {
     test('has three levels', () {
       expect(VoicingDifficulty.values.length, equals(3));
       expect(VoicingDifficulty.values, contains(VoicingDifficulty.beginner));
-      expect(VoicingDifficulty.values, contains(VoicingDifficulty.intermediate));
+      expect(
+          VoicingDifficulty.values, contains(VoicingDifficulty.intermediate));
       expect(VoicingDifficulty.values, contains(VoicingDifficulty.advanced));
     });
   });
