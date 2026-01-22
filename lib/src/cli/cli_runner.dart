@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
+import '../analysis.dart';
 import '../capo.dart';
 import '../chord.dart';
 import '../fretboard_diagram.dart';
 import '../interval.dart';
+import '../pitch_class.dart';
 import '../presets.dart';
 import '../transposition.dart';
 import '../voicing.dart';
@@ -58,6 +60,8 @@ class CliRunner {
         return _runVoicings(command);
       case 'transpose':
         return _runTranspose(command);
+      case 'analyze':
+        return _runAnalyze(command);
       default:
         stderr.writeln('Unknown command: ${command.name}');
         return 64;
@@ -90,6 +94,9 @@ class CliRunner {
 
     // Transpose subcommand
     parser.addCommand('transpose', _buildTransposeParser());
+
+    // Analyze subcommand
+    parser.addCommand('analyze', _buildAnalyzeParser());
 
     return parser;
   }
@@ -180,6 +187,27 @@ class CliRunner {
         help: 'Maximum capo suggestions to show (with --suggest-capo)',
         valueHelp: 'count',
         defaultsTo: '5',
+      );
+  }
+
+  ArgParser _buildAnalyzeParser() {
+    return ArgParser()
+      ..addFlag(
+        'help',
+        abbr: 'h',
+        negatable: false,
+        help: 'Show help for the analyze command.',
+      )
+      ..addFlag(
+        'key-only',
+        abbr: 'k',
+        negatable: false,
+        help: 'Show only the detected key, not Roman numerals.',
+      )
+      ..addOption(
+        'key',
+        help: 'Analyze in a specific key instead of detecting.',
+        valueHelp: 'key',
       );
   }
 
@@ -487,6 +515,7 @@ class CliRunner {
     print('  chord      Show chord notes and formula');
     print('  voicings   Show how to play a chord on your instrument');
     print('  transpose  Transpose chords up or down, suggest capo positions');
+    print('  analyze    Analyze a chord progression (key, Roman numerals, patterns)');
     print('');
     print('Global options:');
     print(parser.usage);
@@ -1033,5 +1062,195 @@ class CliRunner {
     print('  5 semitones = perfect 4th   (C -> F)');
     print('  7 semitones = perfect 5th   (C -> G)');
     print('  12 semitones = octave       (C -> C)');
+  }
+
+  // ==================== Analyze Command ====================
+
+  Future<int> _runAnalyze(ArgResults args) async {
+    // Help
+    if (args['help'] as bool) {
+      _printAnalyzeHelp();
+      return 0;
+    }
+
+    final rest = args.rest;
+    if (rest.isEmpty) {
+      _printAnalyzeHelp();
+      return 0;
+    }
+
+    // Parse chord progression
+    final input = rest.join(' ');
+    final progression = ChordProgression.tryParse(input);
+    if (progression == null || progression.isEmpty) {
+      stderr.writeln('Error: Could not parse chords "$input"');
+      stderr.writeln();
+      stderr.writeln('Expected: Chord progression like "C Am F G"');
+      return 1;
+    }
+
+    final keyOnly = args['key-only'] as bool;
+    final specifiedKeyStr = args['key'] as String?;
+
+    // If a specific key is provided, use it; otherwise detect
+    Key? key;
+    KeyDetectionResult? detection;
+
+    if (specifiedKeyStr != null) {
+      key = _parseKey(specifiedKeyStr);
+      if (key == null) {
+        stderr.writeln('Error: Could not parse key "$specifiedKeyStr"');
+        stderr.writeln();
+        stderr.writeln('Expected: "C", "Am", "F#", "Bbm", etc.');
+        return 1;
+      }
+    } else {
+      detection = progression.detectKey();
+      if (detection != null) {
+        key = detection.key;
+      }
+    }
+
+    print('');
+
+    // Show key detection result
+    if (detection != null) {
+      final confidencePct = (detection.confidence * 100).clamp(0, 100).toStringAsFixed(0);
+      print('  Detected key: ${detection.key.symbol} ($confidencePct% confidence)');
+    } else if (key != null) {
+      print('  Key: ${key.symbol}');
+    } else {
+      print('  Could not determine key');
+      print('');
+      return 0;
+    }
+
+    if (keyOnly) {
+      // Show alternative keys
+      if (specifiedKeyStr == null) {
+        final alternatives = progression.detectPossibleKeys();
+        if (alternatives.length > 1) {
+          print('');
+          print('  Other possibilities:');
+          for (var i = 1; i < alternatives.length; i++) {
+            final alt = alternatives[i];
+            final confPct = (alt.confidence * 100).clamp(0, 100).toStringAsFixed(0);
+            print('    ${alt.key.symbol} ($confPct%)');
+          }
+        }
+      }
+      print('');
+      return 0;
+    }
+
+    // Show Roman numeral analysis
+    if (key != null) {
+      print('');
+      print('  Progression: ${progression.toSymbolString()}');
+      print('');
+
+      final numerals = progression.inKey(key);
+      final numeralStr = numerals.map((n) => n.numeral).join('  ');
+      print('  Roman numerals: $numeralStr');
+      print('');
+
+      // Show each chord with its function
+      print('  Analysis:');
+      for (var i = 0; i < progression.chords.length; i++) {
+        final chord = progression.chords[i];
+        final numeral = numerals[i];
+        final function = numeral.functionName;
+        print('    ${chord.symbol.padRight(8)} ${numeral.numeral.padRight(6)} $function');
+      }
+      print('');
+
+      // Recognize patterns
+      final patterns = ProgressionPatterns.recognize(numerals);
+      if (patterns.isNotEmpty) {
+        print('  Recognized patterns:');
+        for (final pattern in patterns) {
+          print('    • $pattern');
+        }
+        print('');
+      }
+    }
+
+    return 0;
+  }
+
+  /// Parses a key string like "C", "Am", "F#", "Bbm".
+  Key? _parseKey(String input) {
+    final trimmed = input.trim();
+    if (trimmed.isEmpty) return null;
+
+    // Check if it's a minor key (ends with 'm', 'min', or 'minor')
+    bool isMinor = false;
+    String rootStr = trimmed;
+
+    if (trimmed.endsWith('minor')) {
+      isMinor = true;
+      rootStr = trimmed.substring(0, trimmed.length - 5).trim();
+    } else if (trimmed.endsWith('min')) {
+      isMinor = true;
+      rootStr = trimmed.substring(0, trimmed.length - 3).trim();
+    } else if (trimmed.endsWith('m') && !trimmed.endsWith('M')) {
+      // 'm' for minor, but not 'M' for major
+      isMinor = true;
+      rootStr = trimmed.substring(0, trimmed.length - 1);
+    }
+
+    // Parse the root pitch class
+    final root = _parsePitchClass(rootStr);
+    if (root == null) return null;
+
+    return isMinor ? Key.minor(root) : Key.major(root);
+  }
+
+  /// Parses a pitch class string like "C", "F#", "Bb".
+  PitchClass? _parsePitchClass(String input) {
+    final trimmed = input.trim();
+    if (trimmed.isEmpty) return null;
+
+    try {
+      return PitchClass.parse(trimmed);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  void _printAnalyzeHelp() {
+    print('music_theory analyze - Analyze a chord progression');
+    print('');
+    print('Usage: music_theory analyze <chords> [options]');
+    print('');
+    print('Arguments:');
+    print('  chords    A chord progression like "C Am F G"');
+    print('');
+    print('Options:');
+    print('  -k, --key-only     Show only the detected key');
+    print('      --key <key>    Analyze in a specific key (e.g., C, Am, F#)');
+    print('  -h, --help         Show this help');
+    print('');
+    print('Examples:');
+    print('  music_theory analyze "C Am F G"           Analyze pop progression');
+    print('  music_theory analyze "Am G F E" --key Am  Analyze in A minor');
+    print('  music_theory analyze "Dm7 G7 Cmaj7" -k    Show detected key only');
+    print('');
+    print('What the analysis shows:');
+    print('  • Detected key (e.g., C major, A minor)');
+    print('  • Roman numeral for each chord (I, IV, V, vi, etc.)');
+    print('  • Chord function (tonic, dominant, subdominant)');
+    print('  • Recognized patterns (50s progression, ii-V-I, etc.)');
+    print('');
+    print('Understanding Roman numerals:');
+    print('  I   = tonic (home base, "at rest")');
+    print('  ii  = supertonic (often leads to V)');
+    print('  iii = mediant (connects I and V)');
+    print('  IV  = subdominant (builds tension)');
+    print('  V   = dominant (creates pull back to I)');
+    print('  vi  = submediant (relative minor of I)');
+    print('  vii° = leading tone (strong pull to I)');
+    print('');
+    print('Uppercase = major chord, lowercase = minor chord');
   }
 }
