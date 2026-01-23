@@ -106,10 +106,16 @@ class VoicingCalculator {
     final chordPitches = chord.pitchClasses.toSet();
     final root = chord.root;
 
+    // Include bass note as valid pitch for slash chords (e.g., A7/D includes D)
+    final validPitches = Set<PitchClass>.from(chordPitches);
+    if (chord.bassNote != null) {
+      validPitches.add(chord.bassNote!);
+    }
+
     // For each string, find all fret positions that produce chord tones
     final fretOptions = <List<int?>>[];
     for (var i = 0; i < instrument.stringCount; i++) {
-      fretOptions.add(_findFretOptionsForString(i, chordPitches));
+      fretOptions.add(_findFretOptionsForString(i, validPitches));
     }
 
     // Generate all combinations
@@ -258,14 +264,19 @@ class VoicingCalculator {
       return false;
     }
 
-    // Check root in bass
-    if (options.rootInBass) {
-      // Find the first played string (lowest pitch)
+    // Determine required bass note: use slash chord bass note if present,
+    // otherwise use root (if rootInBass option is enabled)
+    final requiredBass = chord.bassNote;
+
+    // Check bass note requirement
+    if (requiredBass != null || options.rootInBass) {
+      final expectedBass = requiredBass ?? root;
+      // Find the first played string (lowest pitch = bass)
       for (var i = 0; i < voicing.positions.length; i++) {
         if (voicing.positions[i].isPlayed) {
           final bassPitch =
               instrument.soundingNoteAt(i, voicing.positions[i].fret!);
-          if (bassPitch != root) {
+          if (bassPitch != expectedBass) {
             return false;
           }
           break;
@@ -273,10 +284,14 @@ class VoicingCalculator {
       }
     }
 
-    // All played notes must be chord tones
+    // Build set of valid chord tones (chord pitches + bass note if slash chord)
     final chordTones = chord.pitchClasses.toSet();
+    if (chord.bassNote != null) {
+      chordTones.add(chord.bassNote!);
+    }
     final uniquePitches = playedPitches.toSet();
 
+    // All played notes must be chord tones (including bass note for slash chords)
     for (final pitch in playedPitches) {
       if (!chordTones.contains(pitch)) {
         return false;
@@ -285,7 +300,9 @@ class VoicingCalculator {
 
     // All chord tones must be present in the voicing
     // This ensures Bm7b5 voicings include the b5, etc.
-    for (final chordTone in chordTones) {
+    // For slash chords, we require chord pitches but bass note presence
+    // is already enforced above
+    for (final chordTone in chord.pitchClasses) {
       if (!uniquePitches.contains(chordTone)) {
         return false;
       }
