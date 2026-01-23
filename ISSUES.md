@@ -293,6 +293,17 @@ This file tracks development tasks before they become GitHub issues.
   - [x] E7 correctly returns 020100 as easiest voicing
   - [x] All existing tests pass
 
+### [BUG] ✅ Fix voicing calculator for slash chords `[GH: #20]`
+- **Status:** Done
+- **Labels:** `bug`, `phase-3`
+- **Description:** Slash chords like A7/D were returning voicings with A in bass instead of D. The voicing calculator only checked for root in bass, ignoring the slash chord's specified bass note.
+- **Root Cause:** `VoicingCalculator.findVoicings()` and `_isValidVoicing()` didn't account for `chord.bassNote` property.
+- **Fix:** Added bass note to valid pitches set and check for slash chord bass note in bass position.
+- **Acceptance Criteria:**
+  - [x] A7/D voicings have D in bass position
+  - [x] Regular chords still work correctly with rootInBass option
+  - [x] All tests pass
+
 ---
 
 ## Label Definitions
