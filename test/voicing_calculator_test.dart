@@ -143,7 +143,6 @@ void main() {
         // Bm7b5 is a good test case - has many potential voicings
         final chord = Chord.parse('Bm7b5');
         const options = VoicingCalculatorOptions(
-          maxFingers: 4,
           maxDifficulty: VoicingDifficulty.intermediate,
         );
         final calc = VoicingCalculator(guitar, options: options);
