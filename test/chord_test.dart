@@ -157,10 +157,50 @@ void main() {
     });
 
     test('all contains all chord types', () {
-      expect(ChordType.all.length, equals(21));
+      expect(ChordType.all.length, equals(27));
       expect(ChordType.all, contains(ChordType.major));
       expect(ChordType.all, contains(ChordType.minor));
       expect(ChordType.all, contains(ChordType.dominant7));
+      expect(ChordType.all, contains(ChordType.dominant7b9));
+      expect(ChordType.all, contains(ChordType.dominant13));
+    });
+
+    group('altered dominants', () {
+      test('dominant7b9 has correct intervals', () {
+        expect(ChordType.dominant7b9.intervals.length, equals(5));
+        expect(ChordType.dominant7b9.intervals[0].semitones, equals(0)); // Root
+        expect(ChordType.dominant7b9.intervals[1].semitones, equals(4)); // M3
+        expect(ChordType.dominant7b9.intervals[2].semitones, equals(7)); // P5
+        expect(ChordType.dominant7b9.intervals[3].semitones, equals(10)); // m7
+        expect(ChordType.dominant7b9.intervals[4].semitones, equals(13)); // m9
+      });
+
+      test('dominant7sharp9 has correct intervals', () {
+        expect(ChordType.dominant7sharp9.intervals.length, equals(5));
+        expect(ChordType.dominant7sharp9.intervals[4].semitones, equals(15)); // A9
+      });
+
+      test('dominant7b13 has correct intervals', () {
+        expect(ChordType.dominant7b13.intervals.length, equals(5));
+        expect(ChordType.dominant7b13.intervals[4].semitones, equals(20)); // m13
+      });
+
+      test('dominant7sharp11 has correct intervals', () {
+        expect(ChordType.dominant7sharp11.intervals.length, equals(5));
+        expect(ChordType.dominant7sharp11.intervals[4].semitones, equals(18)); // A11
+      });
+
+      test('dominant11 has correct intervals', () {
+        expect(ChordType.dominant11.intervals.length, equals(6));
+        expect(ChordType.dominant11.intervals[4].semitones, equals(14)); // M9
+        expect(ChordType.dominant11.intervals[5].semitones, equals(17)); // P11
+      });
+
+      test('dominant13 has correct intervals', () {
+        expect(ChordType.dominant13.intervals.length, equals(6));
+        expect(ChordType.dominant13.intervals[4].semitones, equals(14)); // M9
+        expect(ChordType.dominant13.intervals[5].semitones, equals(21)); // M13
+      });
     });
   });
 
@@ -303,6 +343,60 @@ void main() {
 
         test('parses C9', () {
           expect(Chord.parse('C9').type, equals(ChordType.dominant9));
+        });
+      });
+
+      group('altered dominant chords', () {
+        test('parses B7b9', () {
+          final chord = Chord.parse('B7b9');
+          expect(chord.root, equals(PitchClass.b));
+          expect(chord.type, equals(ChordType.dominant7b9));
+        });
+
+        test('parses B7(b9) with parentheses', () {
+          final chord = Chord.parse('B7(b9)');
+          expect(chord.root, equals(PitchClass.b));
+          expect(chord.type, equals(ChordType.dominant7b9));
+        });
+
+        test('parses E7#9', () {
+          final chord = Chord.parse('E7#9');
+          expect(chord.root, equals(PitchClass.e));
+          expect(chord.type, equals(ChordType.dominant7sharp9));
+        });
+
+        test('parses E7(#9) with parentheses', () {
+          final chord = Chord.parse('E7(#9)');
+          expect(chord.type, equals(ChordType.dominant7sharp9));
+        });
+
+        test('parses A7b13', () {
+          final chord = Chord.parse('A7b13');
+          expect(chord.root, equals(PitchClass.a));
+          expect(chord.type, equals(ChordType.dominant7b13));
+        });
+
+        test('parses A7(b13) with parentheses', () {
+          final chord = Chord.parse('A7(b13)');
+          expect(chord.type, equals(ChordType.dominant7b13));
+        });
+
+        test('parses D7#11', () {
+          final chord = Chord.parse('D7#11');
+          expect(chord.root, equals(PitchClass.d));
+          expect(chord.type, equals(ChordType.dominant7sharp11));
+        });
+
+        test('parses G11', () {
+          final chord = Chord.parse('G11');
+          expect(chord.root, equals(PitchClass.g));
+          expect(chord.type, equals(ChordType.dominant11));
+        });
+
+        test('parses C13', () {
+          final chord = Chord.parse('C13');
+          expect(chord.root, equals(PitchClass.c));
+          expect(chord.type, equals(ChordType.dominant13));
         });
       });
 

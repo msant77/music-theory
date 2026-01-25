@@ -242,6 +242,88 @@ class ChordType {
     ],
   );
 
+  // ==================== Altered Dominant Chords ====================
+
+  /// Dominant 7 flat 9: R, M3, P5, m7, m9
+  static const ChordType dominant7b9 = ChordType(
+    name: 'dominant 7 flat 9',
+    symbol: '7b9',
+    intervals: [
+      Interval.perfectUnison,
+      Interval.majorThird,
+      Interval.perfectFifth,
+      Interval.minorSeventh,
+      Interval(semitones: 13, quality: IntervalQuality.minor, number: 9),
+    ],
+  );
+
+  /// Dominant 7 sharp 9: R, M3, P5, m7, A9
+  static const ChordType dominant7sharp9 = ChordType(
+    name: 'dominant 7 sharp 9',
+    symbol: '7#9',
+    intervals: [
+      Interval.perfectUnison,
+      Interval.majorThird,
+      Interval.perfectFifth,
+      Interval.minorSeventh,
+      Interval(semitones: 15, quality: IntervalQuality.augmented, number: 9),
+    ],
+  );
+
+  /// Dominant 7 flat 13: R, M3, P5, m7, m13
+  static const ChordType dominant7b13 = ChordType(
+    name: 'dominant 7 flat 13',
+    symbol: '7b13',
+    intervals: [
+      Interval.perfectUnison,
+      Interval.majorThird,
+      Interval.perfectFifth,
+      Interval.minorSeventh,
+      Interval(semitones: 20, quality: IntervalQuality.minor, number: 13),
+    ],
+  );
+
+  /// Dominant 7 sharp 11: R, M3, P5, m7, A11
+  static const ChordType dominant7sharp11 = ChordType(
+    name: 'dominant 7 sharp 11',
+    symbol: '7#11',
+    intervals: [
+      Interval.perfectUnison,
+      Interval.majorThird,
+      Interval.perfectFifth,
+      Interval.minorSeventh,
+      Interval(semitones: 18, quality: IntervalQuality.augmented, number: 11),
+    ],
+  );
+
+  /// Dominant 11th: R, M3, P5, m7, M9, P11
+  static const ChordType dominant11 = ChordType(
+    name: 'dominant 11th',
+    symbol: '11',
+    intervals: [
+      Interval.perfectUnison,
+      Interval.majorThird,
+      Interval.perfectFifth,
+      Interval.minorSeventh,
+      Interval(semitones: 14, quality: IntervalQuality.major, number: 9),
+      Interval(semitones: 17, quality: IntervalQuality.perfect, number: 11),
+    ],
+  );
+
+  /// Dominant 13th: R, M3, P5, m7, M9, M13
+  static const ChordType dominant13 = ChordType(
+    name: 'dominant 13th',
+    symbol: '13',
+    intervals: [
+      Interval.perfectUnison,
+      Interval.majorThird,
+      Interval.perfectFifth,
+      Interval.minorSeventh,
+      Interval(semitones: 14, quality: IntervalQuality.major, number: 9),
+      Interval(semitones: 21, quality: IntervalQuality.major, number: 13),
+    ],
+  );
+
   // ==================== Sixth Chords ====================
 
   /// Major 6th: R, M3, P5, M6
@@ -299,6 +381,12 @@ class ChordType {
     dominant9,
     major9,
     minor9,
+    dominant7b9,
+    dominant7sharp9,
+    dominant7b13,
+    dominant7sharp11,
+    dominant11,
+    dominant13,
     major6,
     minor6,
     power,
@@ -541,6 +629,24 @@ ChordType? _parseChordType(String suffix) {
 
     // Minor 9th: m9, min9, Min9, MIN9
     'm9' || 'min9' || 'Min9' || 'MIN9' => ChordType.minor9,
+
+    // Dominant 7 flat 9: 7b9
+    '7b9' => ChordType.dominant7b9,
+
+    // Dominant 7 sharp 9: 7#9
+    '7#9' => ChordType.dominant7sharp9,
+
+    // Dominant 7 flat 13: 7b13
+    '7b13' => ChordType.dominant7b13,
+
+    // Dominant 7 sharp 11: 7#11
+    '7#11' => ChordType.dominant7sharp11,
+
+    // Dominant 11th
+    '11' => ChordType.dominant11,
+
+    // Dominant 13th
+    '13' => ChordType.dominant13,
 
     // Major 6th
     '6' => ChordType.major6,
