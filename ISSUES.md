@@ -304,6 +304,19 @@ This file tracks development tasks before they become GitHub issues.
   - [x] Regular chords still work correctly with rootInBass option
   - [x] All tests pass
 
+### [BUG] ✅ Support Brazilian chord notation in Chord.parse() `[GH: #21]`
+- **Status:** Done
+- **Labels:** `bug`, `phase-2`
+- **Description:** `Chord.parse()` fails on Brazilian notation: `D#m7(5-)`, `A6(9)`, `7M`, compound intervals like `(6/9)`.
+- **Root Cause:** Naive paren stripping, no 6/9 chord type, slash detection inside parens.
+- **Fix:** Brazilian notation normalization, `ChordType.sixNine`, paren-depth-aware slash scan.
+- **Acceptance Criteria:**
+  - [x] `D#m7(5-)` parses as half-diminished 7th (m7b5)
+  - [x] `A6(9)` parses as major 6/9 chord
+  - [x] `7M` suffix recognized as major 7th
+  - [x] Slash chords with compound intervals preserved
+  - [x] All 747 tests pass
+
 ---
 
 ## Label Definitions

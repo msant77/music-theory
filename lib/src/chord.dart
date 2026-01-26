@@ -350,6 +350,19 @@ class ChordType {
     ],
   );
 
+  /// Major 6/9: R, M3, P5, M6, M9
+  static const ChordType sixNine = ChordType(
+    name: 'major 6/9',
+    symbol: '6/9',
+    intervals: [
+      Interval.perfectUnison,
+      Interval.majorThird,
+      Interval.perfectFifth,
+      Interval.majorSixth,
+      Interval(semitones: 14, quality: IntervalQuality.major, number: 9),
+    ],
+  );
+
   // ==================== Power Chord ====================
 
   /// Power chord (5th): R, P5
@@ -389,6 +402,7 @@ class ChordType {
     dominant13,
     major6,
     minor6,
+    sixNine,
     power,
   ];
 
@@ -459,10 +473,24 @@ class Chord {
     }
 
     // Check for slash chord (bass note)
+    // Find the last '/' that is NOT inside parentheses, so that
+    // compound intervals like (6/9) are preserved.
     PitchClass? bassNote;
     var chordPart = trimmed;
 
-    final slashIndex = trimmed.lastIndexOf('/');
+    var slashIndex = -1;
+    var parenDepth = 0;
+    for (var ci = trimmed.length - 1; ci >= 0; ci--) {
+      final ch = trimmed[ci];
+      if (ch == ')') {
+        parenDepth++;
+      } else if (ch == '(') {
+        parenDepth--;
+      } else if (ch == '/' && parenDepth == 0) {
+        slashIndex = ci;
+        break;
+      }
+    }
     if (slashIndex > 0) {
       final bassStr = trimmed.substring(slashIndex + 1);
       try {
@@ -482,6 +510,21 @@ class Chord {
     final rootStr = chordPart.substring(0, index);
     final root = PitchClass.parse(rootStr);
     var suffix = chordPart.substring(index);
+
+    // Normalize Brazilian notation before stripping parentheses:
+    // (5-) → (b5), (9+) → (#9), 7M → M7
+    suffix = suffix.replaceAllMapped(
+      RegExp(r'\((\d+)-\)'),
+      (m) => '(b${m[1]})',
+    );
+    suffix = suffix.replaceAllMapped(
+      RegExp(r'\((\d+)\+\)'),
+      (m) => '(#${m[1]})',
+    );
+    // 7M → M7 (Brazilian major 7 shorthand), but not mmaj7 etc.
+    if (suffix.contains('7M') && !suffix.contains('maj')) {
+      suffix = suffix.replaceFirst('7M', 'M7');
+    }
 
     // Handle parentheses alterations: convert Cm7(b5) to Cm7b5
     suffix = suffix.replaceAll('(', '').replaceAll(')', '');
@@ -653,6 +696,9 @@ ChordType? _parseChordType(String suffix) {
 
     // Minor 6th: m6, min6, Min6, MIN6
     'm6' || 'min6' || 'Min6' || 'MIN6' => ChordType.minor6,
+
+    // Major 6/9: 69, 6/9
+    '69' || '6/9' => ChordType.sixNine,
 
     // Power chord
     '5' => ChordType.power,

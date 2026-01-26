@@ -157,12 +157,13 @@ void main() {
     });
 
     test('all contains all chord types', () {
-      expect(ChordType.all.length, equals(27));
+      expect(ChordType.all.length, equals(28));
       expect(ChordType.all, contains(ChordType.major));
       expect(ChordType.all, contains(ChordType.minor));
       expect(ChordType.all, contains(ChordType.dominant7));
       expect(ChordType.all, contains(ChordType.dominant7b9));
       expect(ChordType.all, contains(ChordType.dominant13));
+      expect(ChordType.all, contains(ChordType.sixNine));
     });
 
     group('altered dominants', () {
