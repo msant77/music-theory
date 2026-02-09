@@ -278,6 +278,20 @@ This file tracks development tasks before they become GitHub issues.
 
 ---
 
+## Phase 6: Voicing Calculator Improvements
+
+### [P6] Voicing calculator improvements roadmap `[GH: #23]`
+- **Status:** Planned
+- **Labels:** `phase-6`, `feature`, `voicing`
+- **Description:** Planned improvements to the voicing calculator for better quality and more options.
+- **Sub-items:**
+  - [ ] **Deduplication**: Filter out voicings that produce the same pitches (same notes, different fingerings with no audible difference)
+  - [ ] **Barre limit enforcement**: Reject voicings where barre position exceeds instrument's fret count
+  - [ ] **String subset selection**: New parameter `activeStrings` (e.g., `{3,4,5,6}` for bass strings only) to constrain voicing search to specific strings
+  - [ ] **Ranking improvements**: Better heuristics for "easy" vs "hard" voicings (hand span, consecutive frets, common shapes)
+
+---
+
 ## Bug Fixes
 
 ### [BUG] Fix voicing validation to require all chord tones `[GH: #21]`
