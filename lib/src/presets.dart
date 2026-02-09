@@ -264,6 +264,9 @@ class _Guitar7Tunings {
   /// Drop A: A E A D G B E
   final dropA = Tuning.parse('Drop A', 'A1 E2 A2 D3 G3 B3 E4');
 
+  /// High A (Brazilian style): C E A D G B E
+  final highA = Tuning.parse('High A', 'C2 E2 A2 D3 G3 B3 E4');
+
   /// All 7-string guitar tunings.
-  List<Tuning> get all => [standard, dropA];
+  List<Tuning> get all => [standard, dropA, highA];
 }
