@@ -333,6 +333,31 @@ This file tracks development tasks before they become GitHub issues.
 
 ---
 
+## Sprint C: New Features
+
+### [Feature] String composition for voicings `[GH: #24]`
+- **Status:** Planned
+- **Labels:** `feature`, `voicing`
+- **Description:** Add `Set<int>? activeStrings` to `VoicingCalculatorOptions`. When set, force excluded strings to muted in the combinatorial search. Part of GH #23 roadmap.
+- **Acceptance Criteria:**
+  - [ ] `activeStrings` parameter added to VoicingCalculatorOptions
+  - [ ] When set, excluded strings are forced to muted
+  - [ ] Works with all existing chord types
+  - [ ] Unit tests for string-constrained voicings
+  - [ ] Existing tests continue to pass
+
+### [Feature] Voicing calculator improvements `[GH: #25]`
+- **Status:** Planned
+- **Labels:** `feature`, `voicing`
+- **Description:** Barre limit enforcement, ranking improvements, common shape detection. Part of GH #23 roadmap.
+- **Acceptance Criteria:**
+  - [ ] Barre limit enforced (no voicings past fret count)
+  - [ ] Improved ranking heuristics
+  - [ ] Common chord shapes detected and prioritized
+  - [ ] All existing tests continue to pass
+
+---
+
 ## Label Definitions
 
 | Label | Description |
