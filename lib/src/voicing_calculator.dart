@@ -49,6 +49,14 @@ class VoicingCalculatorOptions {
   /// Filter by difficulty level.
   final VoicingDifficulty? maxDifficulty;
 
+  /// Restricts which strings are available for playing.
+  ///
+  /// When set, strings whose indices are NOT in this set are forced to muted.
+  /// Uses 0-based indexing (0 = lowest pitched string).
+  /// Example: `{0, 1, 2, 3}` for "bass strings only" on a 6-string guitar.
+  /// When null, all strings are available.
+  final Set<int>? activeStrings;
+
   /// Creates calculator options with defaults suitable for guitar.
   const VoicingCalculatorOptions({
     this.maxFretSpan = 4,
@@ -60,6 +68,7 @@ class VoicingCalculatorOptions {
     this.maxMutedStrings = 2,
     this.maxFingers = 4,
     this.maxDifficulty,
+    this.activeStrings,
   });
 
   /// Options for beginner-friendly voicings.
@@ -177,23 +186,30 @@ class VoicingCalculator {
   }
 
   /// Finds fret positions on a string that produce any of the given pitch classes.
+  ///
+  /// If [options.activeStrings] is set and this string is not in the set,
+  /// only muted (null) is returned, forcing the string to be unused.
   List<int?> _findFretOptionsForString(
       int stringIndex, Set<PitchClass> targets) {
-    final options = <int?>[null]; // null = muted is always an option
+    // Force-mute strings not in the active set
+    if (options.activeStrings != null &&
+        !options.activeStrings!.contains(stringIndex)) {
+      return [null];
+    }
 
-    final maxFret = options.isEmpty
-        ? this.options.maxFret
-        : this.options.maxFret.clamp(
-            0, instrument.strings[stringIndex].fretCount - instrument.capo);
+    final fretOptions = <int?>[null]; // null = muted is always an option
 
-    for (var fret = this.options.minFret; fret <= maxFret; fret++) {
+    final maxFret = options.maxFret
+        .clamp(0, instrument.strings[stringIndex].fretCount - instrument.capo);
+
+    for (var fret = options.minFret; fret <= maxFret; fret++) {
       final pitch = instrument.soundingNoteAt(stringIndex, fret);
       if (targets.contains(pitch)) {
-        options.add(fret);
+        fretOptions.add(fret);
       }
     }
 
-    return options;
+    return fretOptions;
   }
 
   /// Recursively generates all combinations of fret positions.

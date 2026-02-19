@@ -345,4 +345,63 @@ void main() {
       }
     });
   });
+
+  group('activeStrings option', () {
+    test('restricts voicings to specified strings', () {
+      final chord = Chord.parse('Em');
+      // Only use the top 4 strings (indices 2-5) — skip low E and A
+      final calc = VoicingCalculator(
+        guitar,
+        options: const VoicingCalculatorOptions(
+          activeStrings: {2, 3, 4, 5},
+          rootInBass: false,
+        ),
+      );
+      final voicings = calc.findVoicings(chord);
+
+      expect(voicings, isNotEmpty);
+      for (final voicing in voicings) {
+        // Strings 0 and 1 must be muted
+        expect(voicing.positions[0].isMuted, isTrue,
+            reason: 'String 0 should be muted (not in activeStrings)');
+        expect(voicing.positions[1].isMuted, isTrue,
+            reason: 'String 1 should be muted (not in activeStrings)');
+      }
+    });
+
+    test('null activeStrings uses all strings', () {
+      final chord = Chord.parse('Em');
+      final calc = VoicingCalculator(
+        guitar,
+        options: const VoicingCalculatorOptions(activeStrings: null),
+      );
+      final voicings = calc.findVoicings(chord);
+
+      // Should include voicings that use all 6 strings (022000)
+      final fullVoicings = voicings.where((v) => v.playedStringCount == 6);
+      expect(fullVoicings, isNotEmpty);
+    });
+
+    test('bass-only strings produce valid voicings', () {
+      final chord = Chord.parse('A');
+      // Only bass strings (0-2)
+      final calc = VoicingCalculator(
+        guitar,
+        options: const VoicingCalculatorOptions(
+          activeStrings: {0, 1, 2},
+          minStringsPlayed: 3,
+          maxMutedStrings: 3,
+        ),
+      );
+      final voicings = calc.findVoicings(chord);
+
+      expect(voicings, isNotEmpty);
+      for (final voicing in voicings) {
+        // Strings 3-5 must be muted
+        expect(voicing.positions[3].isMuted, isTrue);
+        expect(voicing.positions[4].isMuted, isTrue);
+        expect(voicing.positions[5].isMuted, isTrue);
+      }
+    });
+  });
 }

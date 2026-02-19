@@ -277,6 +277,37 @@ class Voicing {
       }
     }
 
+    // Hand span penalty: penalize large gaps between adjacent fretted strings
+    final frettedPositions = <(int stringIndex, int fret)>[];
+    for (var i = 0; i < positions.length; i++) {
+      if (positions[i].isFretted) {
+        frettedPositions.add((i, positions[i].fret!));
+      }
+    }
+    for (var i = 1; i < frettedPositions.length; i++) {
+      final fretGap =
+          (frettedPositions[i].$2 - frettedPositions[i - 1].$2).abs();
+      if (fretGap >= 3) {
+        score += (fretGap - 2) * 5; // Penalty for wide finger gaps
+      }
+    }
+
+    // Consecutive fret bonus: voicings with adjacent frets are easier
+    if (frettedPositions.length >= 2) {
+      final frets = frettedPositions.map((p) => p.$2).toSet();
+      final sortedFrets = frets.toList()..sort();
+      var consecutive = true;
+      for (var i = 1; i < sortedFrets.length; i++) {
+        if (sortedFrets[i] - sortedFrets[i - 1] > 1) {
+          consecutive = false;
+          break;
+        }
+      }
+      if (consecutive && sortedFrets.length <= 3) {
+        score -= 5; // Bonus for compact patterns
+      }
+    }
+
     // Open chord bonus (easier)
     if (lowestFret == null || lowestFret == 1) {
       final openCount = positions.where((p) => p.isOpen).length;
