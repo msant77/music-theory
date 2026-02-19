@@ -441,6 +441,18 @@ class Voicing {
     }).join();
   }
 
+  /// Returns a fret string suitable for ICLF `{chord_voicing}` directives.
+  ///
+  /// Uses lowercase 'x' for muted strings (matching the ICLF spec pattern).
+  /// Example: "x02210" for Am, "133211" for F barre.
+  String toFretString() {
+    return positions.map((p) {
+      if (p.isMuted) return 'x';
+      if (p.fret! >= 10) return '(${p.fret})';
+      return p.fret.toString();
+    }).join();
+  }
+
   @override
   String toString() => toCompactString();
 

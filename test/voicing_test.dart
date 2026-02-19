@@ -458,6 +458,23 @@ void main() {
       });
     });
 
+    group('toFretString', () {
+      test('uses lowercase x for muted strings', () {
+        final voicing = Voicing.fromFrets([null, 0, 2, 2, 1, 0]);
+        expect(voicing.toFretString(), equals('x02210'));
+      });
+
+      test('handles all open strings', () {
+        final voicing = Voicing.fromFrets([0, 0, 0, 0, 0, 0]);
+        expect(voicing.toFretString(), equals('000000'));
+      });
+
+      test('handles double-digit frets with parentheses', () {
+        final voicing = Voicing.fromFrets([null, 0, 10, 10, 9, 0]);
+        expect(voicing.toFretString(), equals('x0(10)(10)90'));
+      });
+    });
+
     group('equality', () {
       test('equal voicings are equal', () {
         final v1 = Voicing.fromFrets([null, 0, 2, 2, 1, 0]);
