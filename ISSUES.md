@@ -281,14 +281,14 @@ This file tracks development tasks before they become GitHub issues.
 ## Phase 6: Voicing Calculator Improvements
 
 ### [P6] Voicing calculator improvements roadmap `[GH: #23]`
-- **Status:** Planned
+- **Status:** In Progress
 - **Labels:** `phase-6`, `feature`, `voicing`
 - **Description:** Planned improvements to the voicing calculator for better quality and more options.
 - **Sub-items:**
   - [ ] **Deduplication**: Filter out voicings that produce the same pitches (same notes, different fingerings with no audible difference)
   - [ ] **Barre limit enforcement**: Reject voicings where barre position exceeds instrument's fret count
-  - [ ] **String subset selection**: New parameter `activeStrings` (e.g., `{3,4,5,6}` for bass strings only) to constrain voicing search to specific strings
-  - [ ] **Ranking improvements**: Better heuristics for "easy" vs "hard" voicings (hand span, consecutive frets, common shapes)
+  - [x] **String subset selection**: `activeStrings` parameter added to `VoicingCalculatorOptions` (#24)
+  - [x] **Ranking improvements**: Hand span penalty + consecutive fret bonus (#25)
 
 ---
 
@@ -333,28 +333,29 @@ This file tracks development tasks before they become GitHub issues.
 
 ---
 
-## Sprint C: New Features
+## Sprint C: New Features ✅
 
-### [Feature] String composition for voicings `[GH: #24]`
-- **Status:** Planned
+### [Feature] ✅ String composition for voicings `[GH: #24]`
+- **Status:** Done
 - **Labels:** `feature`, `voicing`
-- **Description:** Add `Set<int>? activeStrings` to `VoicingCalculatorOptions`. When set, force excluded strings to muted in the combinatorial search. Part of GH #23 roadmap.
+- **Description:** Added `Set<int>? activeStrings` to `VoicingCalculatorOptions`. When set, excluded strings are force-muted in the combinatorial search. Part of GH #23 roadmap.
 - **Acceptance Criteria:**
-  - [ ] `activeStrings` parameter added to VoicingCalculatorOptions
-  - [ ] When set, excluded strings are forced to muted
-  - [ ] Works with all existing chord types
-  - [ ] Unit tests for string-constrained voicings
-  - [ ] Existing tests continue to pass
+  - [x] `activeStrings` parameter added to VoicingCalculatorOptions
+  - [x] When set, excluded strings are forced to muted
+  - [x] Works with all existing chord types
+  - [x] Unit tests for string-constrained voicings (3 tests: restricted, null, bass-only)
+  - [x] Existing tests continue to pass
 
-### [Feature] Voicing calculator improvements `[GH: #25]`
-- **Status:** Planned
+### [Feature] ✅ Voicing calculator improvements `[GH: #25]`
+- **Status:** Done
 - **Labels:** `feature`, `voicing`
-- **Description:** Barre limit enforcement, ranking improvements, common shape detection. Part of GH #23 roadmap.
+- **Description:** Improved voicing ranking with hand span penalty and consecutive fret bonus. Added `toFretString()` for ICLF chord_voicing compatibility. Part of GH #23 roadmap.
 - **Acceptance Criteria:**
-  - [ ] Barre limit enforced (no voicings past fret count)
-  - [ ] Improved ranking heuristics
-  - [ ] Common chord shapes detected and prioritized
-  - [ ] All existing tests continue to pass
+  - [x] Improved ranking heuristics (hand span penalty, consecutive fret bonus)
+  - [x] Compact finger patterns prioritized in ranking
+  - [x] `toFretString()` added to Voicing for ICLF export (lowercase 'x' for muted)
+  - [x] All existing tests continue to pass
+  - [ ] Barre limit enforcement *(deferred — tracked in #23 roadmap)*
 
 ---
 
