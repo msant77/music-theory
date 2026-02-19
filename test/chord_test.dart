@@ -178,17 +178,20 @@ void main() {
 
       test('dominant7sharp9 has correct intervals', () {
         expect(ChordType.dominant7sharp9.intervals.length, equals(5));
-        expect(ChordType.dominant7sharp9.intervals[4].semitones, equals(15)); // A9
+        expect(
+            ChordType.dominant7sharp9.intervals[4].semitones, equals(15)); // A9
       });
 
       test('dominant7b13 has correct intervals', () {
         expect(ChordType.dominant7b13.intervals.length, equals(5));
-        expect(ChordType.dominant7b13.intervals[4].semitones, equals(20)); // m13
+        expect(
+            ChordType.dominant7b13.intervals[4].semitones, equals(20)); // m13
       });
 
       test('dominant7sharp11 has correct intervals', () {
         expect(ChordType.dominant7sharp11.intervals.length, equals(5));
-        expect(ChordType.dominant7sharp11.intervals[4].semitones, equals(18)); // A11
+        expect(ChordType.dominant7sharp11.intervals[4].semitones,
+            equals(18)); // A11
       });
 
       test('dominant11 has correct intervals', () {

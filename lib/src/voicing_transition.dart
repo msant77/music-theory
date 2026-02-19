@@ -66,9 +66,8 @@ class VoicingTransition {
 
     // 2. Per-string changes (0-36 points for 6 strings)
     // Measures individual finger movement requirements
-    final minStrings = from.stringCount < to.stringCount
-        ? from.stringCount
-        : to.stringCount;
+    final minStrings =
+        from.stringCount < to.stringCount ? from.stringCount : to.stringCount;
     for (int i = 0; i < minStrings; i++) {
       final fromPos = from.positions[i];
       final toPos = to.positions[i];
